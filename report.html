@@ -1,0 +1,2466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FleetMS | Reports & Document Generation</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f4f5f7;
+            color: #222;
+        }
+
+        /* =========================
+           NAVBAR
+        ========================= */
+        .navbar {
+            height: 65px;
+            background: #171717;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            border-bottom: 1px solid #333;
+        }
+
+        .logo {
+            font-size: 23px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            color: #d4af37;
+        }
+
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        .user-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: #d4af37;
+            color: #111;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* =========================
+           SIDEBAR
+        ========================= */
+        .sidebar {
+            position: fixed;
+            top: 65px;
+            left: 0;
+            width: 240px;
+            height: calc(100vh - 65px);
+            background: #202020;
+            padding-top: 20px;
+            overflow-y: auto;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #ccc;
+            text-decoration: none;
+            padding: 14px 22px;
+            font-size: 14px;
+            border-left: 4px solid transparent;
+            transition: 0.2s;
+        }
+
+        .sidebar a:hover {
+            background: #2d2d2d;
+            color: white;
+        }
+
+        .sidebar a.active {
+            background: #2d2d2d;
+            color: #d4af37;
+            border-left: 4px solid #d4af37;
+        }
+
+        .sidebar-section {
+            padding: 18px 22px 8px;
+            color: #777;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* =========================
+           MAIN CONTENT
+        ========================= */
+        .main {
+            margin-left: 240px;
+            padding: 90px 30px 40px;
+        }
+
+        .page-header {
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            margin-bottom: 7px;
+        }
+
+        .page-header p {
+            color: #777;
+            font-size: 14px;
+        }
+
+        /* =========================
+           CARDS
+        ========================= */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e4e4e4;
+            box-shadow: 0 2px 7px rgba(0,0,0,0.04);
+        }
+
+        .summary-card h4 {
+            color: #777;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .summary-card .number {
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        .summary-card .gold {
+            color: #b18a13;
+        }
+
+        /* =========================
+           PANELS
+        ========================= */
+        .panel {
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e3e3e3;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 7px rgba(0,0,0,0.04);
+        }
+
+        .panel-header {
+            padding: 18px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-header h2 {
+            font-size: 18px;
+        }
+
+        .panel-body {
+            padding: 20px;
+        }
+
+        /* =========================
+           FORM
+        ========================= */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 7px;
+            color: #444;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 11px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+            background: white;
+            font-size: 13px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #d4af37;
+        }
+
+        .form-actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        /* =========================
+           BUTTONS
+        ========================= */
+        .btn {
+            border: none;
+            padding: 10px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background: #171717;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #303030;
+        }
+
+        .btn-gold {
+            background: #d4af37;
+            color: #111;
+        }
+
+        .btn-gold:hover {
+            background: #c39d24;
+        }
+
+        .btn-secondary {
+            background: #e8e8e8;
+            color: #333;
+        }
+
+        .btn-danger {
+            background: #c0392b;
+            color: white;
+        }
+
+        /* =========================
+           REPORT CARDS
+        ========================= */
+        .report-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .report-card {
+            border: 1px solid #ddd;
+            border-radius: 7px;
+            padding: 18px;
+            transition: 0.2s;
+        }
+
+        .report-card:hover {
+            border-color: #d4af37;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+        }
+
+        .report-icon {
+            width: 42px;
+            height: 42px;
+            background: #f5f0df;
+            color: #9b7911;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+
+        .report-card h3 {
+            font-size: 16px;
+            margin-bottom: 7px;
+        }
+
+        .report-card p {
+            color: #777;
+            font-size: 12px;
+            line-height: 1.5;
+            min-height: 38px;
+        }
+
+        .report-card button {
+            margin-top: 14px;
+        }
+
+        /* =========================
+           TABLE
+        ========================= */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+            font-size: 12px;
+        }
+
+        th {
+            background: #f7f7f7;
+            color: #555;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        tr:hover td {
+            background: #fafafa;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .status.completed {
+            background: #e7f5e9;
+            color: #267a34;
+        }
+
+        .status.processing {
+            background: #fff4d7;
+            color: #8c6b00;
+        }
+
+        /* =========================
+           PREVIEW MODAL
+        ========================= */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.65);
+            z-index: 2000;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: white;
+            max-width: 1250px;
+            margin: auto;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background: #171717;
+            color: white;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 18px;
+        }
+
+        .close {
+            font-size: 25px;
+            cursor: pointer;
+            color: #ccc;
+        }
+
+        .close:hover {
+            color: white;
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        .modal-footer {
+            padding: 15px 20px;
+            background: #f7f7f7;
+            border-top: 1px solid #ddd;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* =========================
+           REPORT DOCUMENT
+        ========================= */
+        .report-document {
+            background: white;
+        }
+
+        .report-heading {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .report-heading h1 {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .report-heading h2 {
+            font-size: 17px;
+            margin-bottom: 5px;
+        }
+
+        .report-heading p {
+            color: #666;
+            font-size: 12px;
+        }
+
+        .report-meta {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+
+        .meta-box {
+            padding: 12px;
+            border-right: 1px solid #ddd;
+        }
+
+        .meta-box:last-child {
+            border-right: none;
+        }
+
+        .meta-box strong {
+            display: block;
+            font-size: 10px;
+            color: #777;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .meta-box span {
+            font-size: 12px;
+        }
+
+        /* =========================
+           REPORT SUMMARY
+        ========================= */
+        .report-summary {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .report-summary-box {
+            border: 1px solid #ddd;
+            padding: 14px;
+            border-radius: 5px;
+        }
+
+        .report-summary-box .label {
+            font-size: 10px;
+            color: #777;
+            text-transform: uppercase;
+            margin-bottom: 7px;
+        }
+
+        .report-summary-box .value {
+            font-size: 17px;
+            font-weight: bold;
+        }
+
+        .section-title {
+            font-size: 14px;
+            margin: 20px 0 10px;
+            border-left: 4px solid #d4af37;
+            padding-left: 8px;
+        }
+
+        .report-footer {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+            font-size: 10px;
+            color: #777;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* =========================
+           HIDDEN
+        ========================= */
+        .hidden {
+            display: none !important;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+        @media (max-width: 1100px) {
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .form-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .report-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .report-summary {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 700px) {
+            .sidebar {
+                width: 65px;
+            }
+
+            .sidebar a {
+                font-size: 0;
+                text-align: center;
+                padding: 15px 5px;
+            }
+
+            .sidebar a::first-letter {
+                font-size: 18px;
+            }
+
+            .sidebar-section {
+                display: none;
+            }
+
+            .main {
+                margin-left: 65px;
+                padding: 85px 15px 30px;
+            }
+
+            .summary-grid,
+            .form-grid,
+            .report-grid,
+            .report-summary {
+                grid-template-columns: 1fr;
+            }
+
+            .user-area span {
+                display: none;
+            }
+
+            .navbar {
+                padding: 0 15px;
+            }
+
+            .modal {
+                padding: 10px;
+            }
+
+            .report-meta {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .meta-box:nth-child(2) {
+                border-right: none;
+            }
+        }
+
+        /* =========================
+           PRINT
+        ========================= */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+
+            #reportPreview,
+            #reportPreview * {
+                visibility: visible;
+            }
+
+            #reportPreview {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                background: white;
+            }
+
+            .modal-header,
+            .modal-footer {
+                display: none !important;
+            }
+
+            .modal {
+                position: absolute;
+                padding: 0;
+                background: white;
+                overflow: visible;
+            }
+
+            .report-document {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- =========================
+     NAVBAR
+========================= -->
+<div class="navbar">
+
+    <div class="logo">
+        Fleet<span>MS</span>
+    </div>
+
+    <div class="user-area">
+        <span>System Administrator</span>
+        <div class="user-icon">SA</div>
+    </div>
+
+</div>
+
+
+<!-- =========================
+     SIDEBAR
+========================= -->
+<div class="sidebar">
+
+    <div class="sidebar-section">Main</div>
+
+    <a href="dashboard.html">▣ Dashboard</a>
+    <a href="vehicles.html">🚙 Vehicles</a>
+    <a href="drivers.html">👤 Drivers</a>
+
+    <div class="sidebar-section">Fleet Operations</div>
+
+    <a href="maintenance.html">🔧 Maintenance</a>
+    <a href="fuel.html">⛽ Fuel Management</a>
+    <a href="vehicle_requests.html">📋 Vehicle Requests</a>
+
+    <div class="sidebar-section">Analysis</div>
+
+    <a href="analytics.html">📊 Fleet Analytics</a>
+    <a href="search.html">🔎 Search & Filters</a>
+    <a href="reports.html" class="active">📄 Reports & Documents</a>
+
+    <div class="sidebar-section">Administration</div>
+
+    <a href="users.html">👥 Users & Roles</a>
+    <a href="settings.html">⚙ Settings</a>
+
+    <a href="#" onclick="logout()">🚪 Logout</a>
+
+</div>
+
+
+<!-- =========================
+     MAIN CONTENT
+========================= -->
+<div class="main">
+
+    <div class="page-header">
+        <h1>Reports & Document Generation</h1>
+        <p>Generate, preview, export and manage FleetMS operational reports.</p>
+    </div>
+
+
+    <!-- =========================
+         SUMMARY CARDS
+    ========================= -->
+    <div class="summary-grid">
+
+        <div class="summary-card">
+            <h4>Reports Generated</h4>
+            <div class="number">186</div>
+        </div>
+
+        <div class="summary-card">
+            <h4>This Month</h4>
+            <div class="number gold">24</div>
+        </div>
+
+        <div class="summary-card">
+            <h4>Fleet Vehicles</h4>
+            <div class="number">248</div>
+        </div>
+
+        <div class="summary-card">
+            <h4>Data Records</h4>
+            <div class="number">12,486</div>
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         CUSTOM REPORT GENERATOR
+    ========================= -->
+    <div class="panel">
+
+        <div class="panel-header">
+            <h2>Custom Report Generator</h2>
+        </div>
+
+        <div class="panel-body">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Report Type</label>
+
+                    <select id="reportType">
+
+                        <option value="fleet-status">
+                            Fleet Status Report
+                        </option>
+
+                        <option value="vehicle-register">
+                            Vehicle Register
+                        </option>
+
+                        <option value="fuel-consumption">
+                            Fuel Consumption Report
+                        </option>
+
+                        <option value="mileage">
+                            Mileage Report
+                        </option>
+
+                        <option value="maintenance">
+                            Maintenance Report
+                        </option>
+
+                        <option value="vehicle-request">
+                            Vehicle Request Report
+                        </option>
+
+                        <option value="driver-activity">
+                            Driver Activity Report
+                        </option>
+
+                        <option value="fleet-expenditure">
+                            Fleet Expenditure Report
+                        </option>
+
+                        <option value="comprehensive">
+                            Comprehensive Fleet Report
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+                    <label>From Date</label>
+                    <input type="date" id="fromDate" value="2026-09-01">
+                </div>
+
+
+                <div class="form-group">
+                    <label>To Date</label>
+                    <input type="date" id="toDate" value="2026-09-30">
+                </div>
+
+
+                <div class="form-group">
+                    <label>Department / Directorate</label>
+
+                    <select id="department">
+
+                        <option value="All Departments">
+                            All Departments
+                        </option>
+
+                        <option value="ICT">
+                            ICT Division
+                        </option>
+
+                        <option value="Finance">
+                            Finance
+                        </option>
+
+                        <option value="Human Resource">
+                            Human Resource
+                        </option>
+
+                        <option value="Immigration">
+                            Immigration Services
+                        </option>
+
+                        <option value="Citizen Services">
+                            Citizen Services
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <button class="btn btn-primary"
+                        onclick="generateReport()">
+                    Generate Report
+                </button>
+
+                <button class="btn btn-gold"
+                        onclick="previewReport()">
+                    Preview
+                </button>
+
+                <button class="btn btn-secondary"
+                        onclick="exportCSV()">
+                    Export CSV
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         AVAILABLE REPORTS
+    ========================= -->
+    <div class="panel">
+
+        <div class="panel-header">
+            <h2>Available Reports</h2>
+        </div>
+
+        <div class="panel-body">
+
+            <div class="report-grid">
+
+                <div class="report-card">
+                    <div class="report-icon">🚙</div>
+                    <h3>Fleet Status Report</h3>
+                    <p>Summary of vehicles by operational status and category.</p>
+                    <button class="btn btn-primary"
+                            onclick="quickReport('fleet-status')">
+                        Generate
+                    </button>
+                </div>
+
+
+                <div class="report-card">
+                    <div class="report-icon">📋</div>
+                    <h3>Vehicle Register</h3>
+                    <p>Detailed register of all vehicles in the fleet.</p>
+                    <button class="btn btn-primary"
+                            onclick="quickReport('vehicle-register')">
+                        Generate
+                    </button>
+                </div>
+
+
+                <div class="report-card">
+                    <div class="report-icon">⛽</div>
+                    <h3>Fuel Consumption Report</h3>
+                    <p>
+                        Fuel consumed, distance travelled, efficiency,
+                        expenditure and transaction details.
+                    </p>
+                    <button class="btn btn-primary"
+                            onclick="quickReport('fuel-consumption')">
+                        Generate
+                    </button>
+                </div>
+
+
+                <div class="report-card">
+                    <div class="report-icon">🛣</div>
+                    <h3>Mileage Report</h3>
+                    <p>Vehicle mileage and distance travelled over a selected period.</p>
+                    <button class="btn btn-primary"
+                            onclick="quickReport('mileage')">
+                        Generate
+                    </button>
+                </div>
+
+
+                <div class="report-card">
+                    <div class="report-icon">🔧</div>
+                    <h3>Maintenance Report</h3>
+                    <p>Maintenance activities, costs and service history.</p>
+                    <button class="btn btn-primary"
+                            onclick="quickReport('maintenance')">
+                        Generate
+                    </button>
+                </div>
+
+
+                <div class="report-card">
+                    <div class="report-icon">📑</div>
+                    <h3>Vehicle Request Report</h3>
+                    <p>Requests, approvals, allocations and completed trips.</p>
+                    <button class="btn btn-primary"
+                            onclick="quickReport('vehicle-request')">
+                        Generate
+                    </button>
+                </div>
+
+
+                <div class="report-card">
+                    <div class="report-icon">👤</div>
+                    <h3>Driver Activity Report</h3>
+                    <p>Driver assignments, trips and vehicle activity.</p>
+                    <button class="btn btn-primary"
+                            onclick="quickReport('driver-activity')">
+                        Generate
+                    </button>
+                </div>
+
+
+                <div class="report-card">
+                    <div class="report-icon">💰</div>
+                    <h3>Fleet Expenditure Report</h3>
+                    <p>Fuel, maintenance and other fleet-related expenditure.</p>
+                    <button class="btn btn-primary"
+                            onclick="quickReport('fleet-expenditure')">
+                        Generate
+                    </button>
+                </div>
+
+
+                <div class="report-card">
+                    <div class="report-icon">📊</div>
+                    <h3>Comprehensive Fleet Report</h3>
+                    <p>Combined fleet, fuel, mileage, maintenance and request information.</p>
+                    <button class="btn btn-primary"
+                            onclick="quickReport('comprehensive')">
+                        Generate
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         RECENTLY GENERATED REPORTS
+    ========================= -->
+    <div class="panel">
+
+        <div class="panel-header">
+            <h2>Recently Generated Reports</h2>
+        </div>
+
+        <div class="panel-body">
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Report ID</th>
+                            <th>Report Name</th>
+                            <th>Period</th>
+                            <th>Department</th>
+                            <th>Generated By</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+                            <td>RPT-0186</td>
+                            <td>Fuel Consumption Report</td>
+                            <td>Sep 2026</td>
+                            <td>ICT Division</td>
+                            <td>System Administrator</td>
+                            <td>26 Sep 2026</td>
+                            <td>
+                                <span class="status completed">
+                                    Completed
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn btn-secondary"
+                                        onclick="previewReport('fuel-consumption')">
+                                    View
+                                </button>
+                            </td>
+                        </tr>
+
+
+                        <tr>
+                            <td>RPT-0185</td>
+                            <td>Vehicle Register</td>
+                            <td>Sep 2026</td>
+                            <td>All Departments</td>
+                            <td>System Administrator</td>
+                            <td>25 Sep 2026</td>
+                            <td>
+                                <span class="status completed">
+                                    Completed
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn btn-secondary"
+                                        onclick="previewReport('vehicle-register')">
+                                    View
+                                </button>
+                            </td>
+                        </tr>
+
+
+                        <tr>
+                            <td>RPT-0184</td>
+                            <td>Maintenance Report</td>
+                            <td>Sep 2026</td>
+                            <td>Transport</td>
+                            <td>Fleet Manager</td>
+                            <td>24 Sep 2026</td>
+                            <td>
+                                <span class="status completed">
+                                    Completed
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn btn-secondary"
+                                        onclick="previewReport('maintenance')">
+                                    View
+                                </button>
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     REPORT PREVIEW MODAL
+========================= -->
+<div class="modal" id="reportModal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2>Report Preview</h2>
+
+            <span class="close"
+                  onclick="closePreview()">
+                &times;
+            </span>
+
+        </div>
+
+
+        <div class="modal-body">
+
+            <div id="reportPreview"
+                 class="report-document">
+
+                <!-- Dynamic content inserted here -->
+
+            </div>
+
+        </div>
+
+
+        <div class="modal-footer">
+
+            <button class="btn btn-secondary"
+                    onclick="closePreview()">
+                Close
+            </button>
+
+            <button class="btn btn-primary"
+                    onclick="printReport()">
+                Print / Save PDF
+            </button>
+
+            <button class="btn btn-gold"
+                    onclick="downloadCurrentReport()">
+                Export CSV
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    /* =====================================================
+       DEMO VEHICLE DATA
+    ===================================================== */
+
+    const vehicles = [
+
+        {
+            registration: "KDA 452A",
+            make: "Toyota",
+            model: "Land Cruiser Prado",
+            category: "4x4/SUV",
+            department: "ICT Division",
+            driver: "David Mwangi",
+            status: "Active",
+            mileage: 77500
+        },
+
+        {
+            registration: "KDG 918C",
+            make: "Toyota",
+            model: "Hilux",
+            category: "Utility",
+            department: "Immigration Services",
+            driver: "Peter Kamau",
+            status: "Active",
+            mileage: 124300
+        },
+
+        {
+            registration: "KDB 331B",
+            make: "Nissan",
+            model: "X-Trail",
+            category: "Passenger",
+            department: "Citizen Services",
+            driver: "James Kariuki",
+            status: "Active",
+            mileage: 96800
+        },
+
+        {
+            registration: "KDK 784D",
+            make: "Toyota",
+            model: "Fortuner",
+            category: "4x4/SUV",
+            department: "Finance",
+            driver: "John Otieno",
+            status: "Available",
+            mileage: 65450
+        },
+
+        {
+            registration: "KDL 215B",
+            make: "Isuzu",
+            model: "D-Max",
+            category: "Utility",
+            department: "Human Resource",
+            driver: "Brian Kiptoo",
+            status: "Maintenance",
+            mileage: 84500
+        }
+
+    ];
+
+
+    /* =====================================================
+       FUEL DATA
+    ===================================================== */
+
+    const fuelRecords = [
+
+        {
+            date: "2026-09-05",
+            vehicle: "KDA 452A",
+            driver: "David Mwangi",
+            fuelType: "Diesel",
+            opening: 77000,
+            closing: 77500,
+            litres: 62,
+            price: 189,
+            station: "National Oil",
+            receipt: "FO-10021"
+        },
+
+        {
+            date: "2026-09-07",
+            vehicle: "KDG 918C",
+            driver: "Peter Kamau",
+            fuelType: "Diesel",
+            opening: 123800,
+            closing: 124300,
+            litres: 71,
+            price: 189,
+            station: "Rubis",
+            receipt: "FO-10022"
+        },
+
+        {
+            date: "2026-09-10",
+            vehicle: "KDB 331B",
+            driver: "James Kariuki",
+            fuelType: "Petrol",
+            opening: 96300,
+            closing: 96800,
+            litres: 58,
+            price: 189,
+            station: "Shell",
+            receipt: "FO-10023"
+        },
+
+        {
+            date: "2026-09-13",
+            vehicle: "KDK 784D",
+            driver: "John Otieno",
+            fuelType: "Diesel",
+            opening: 65000,
+            closing: 65450,
+            litres: 55,
+            price: 189,
+            station: "TotalEnergies",
+            receipt: "FO-10024"
+        },
+
+        {
+            date: "2026-09-18",
+            vehicle: "KDA 452A",
+            driver: "David Mwangi",
+            fuelType: "Diesel",
+            opening: 77500,
+            closing: 78020,
+            litres: 65,
+            price: 189,
+            station: "National Oil",
+            receipt: "FO-10025"
+        },
+
+        {
+            date: "2026-09-21",
+            vehicle: "KDG 918C",
+            driver: "Peter Kamau",
+            fuelType: "Diesel",
+            opening: 124300,
+            closing: 124820,
+            litres: 73,
+            price: 189,
+            station: "Rubis",
+            receipt: "FO-10026"
+        }
+
+    ];
+
+
+    /* =====================================================
+       REPORT NAMES
+    ===================================================== */
+
+    const reportNames = {
+
+        "fleet-status":
+            "Fleet Status Report",
+
+        "vehicle-register":
+            "Vehicle Register",
+
+        "fuel-consumption":
+            "Fuel Consumption Report",
+
+        "mileage":
+            "Mileage Report",
+
+        "maintenance":
+            "Maintenance Report",
+
+        "vehicle-request":
+            "Vehicle Request Report",
+
+        "driver-activity":
+            "Driver Activity Report",
+
+        "fleet-expenditure":
+            "Fleet Expenditure Report",
+
+        "comprehensive":
+            "Comprehensive Fleet Report"
+
+    };
+
+
+    /* =====================================================
+       FORMAT FUNCTIONS
+    ===================================================== */
+
+    function formatNumber(number) {
+
+        return Number(number).toLocaleString(
+            "en-KE",
+            {
+                maximumFractionDigits: 2
+            }
+        );
+
+    }
+
+
+    function formatCurrency(number) {
+
+        return "KES " +
+            Number(number).toLocaleString(
+                "en-KE",
+                {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }
+            );
+
+    }
+
+
+    function formatDate(dateString) {
+
+        if (!dateString) return "";
+
+        const date = new Date(dateString);
+
+        return date.toLocaleDateString(
+            "en-GB",
+            {
+                day: "2-digit",
+                month: "short",
+                year: "numeric"
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       FUEL CALCULATIONS
+    ===================================================== */
+
+    function getFuelRecords() {
+
+        const from =
+            document.getElementById("fromDate").value;
+
+        const to =
+            document.getElementById("toDate").value;
+
+        const department =
+            document.getElementById("department").value;
+
+
+        return fuelRecords.filter(record => {
+
+            const dateCheck =
+                (!from || record.date >= from) &&
+                (!to || record.date <= to);
+
+            let departmentCheck = true;
+
+            if (department !== "All Departments") {
+
+                const vehicle =
+                    vehicles.find(
+                        v => v.registration === record.vehicle
+                    );
+
+                departmentCheck =
+                    vehicle &&
+                    vehicle.department === department;
+            }
+
+            return dateCheck && departmentCheck;
+
+        });
+
+    }
+
+
+    function calculateFuelData(records) {
+
+        let totalLitres = 0;
+        let totalCost = 0;
+        let totalDistance = 0;
+
+
+        records.forEach(record => {
+
+            const distance =
+                record.closing - record.opening;
+
+            const cost =
+                record.litres * record.price;
+
+            totalLitres += record.litres;
+            totalCost += cost;
+            totalDistance += distance;
+
+        });
+
+
+        const efficiency =
+            totalLitres > 0
+                ? totalDistance / totalLitres
+                : 0;
+
+
+        const costPerKm =
+            totalDistance > 0
+                ? totalCost / totalDistance
+                : 0;
+
+
+        return {
+
+            totalLitres,
+            totalCost,
+            totalDistance,
+            efficiency,
+            costPerKm
+
+        };
+
+    }
+
+
+    /* =====================================================
+       FUEL CONSUMPTION REPORT
+    ===================================================== */
+
+    function buildFuelConsumptionReport() {
+
+        const records =
+            getFuelRecords();
+
+        const totals =
+            calculateFuelData(records);
+
+        const from =
+            document.getElementById("fromDate").value;
+
+        const to =
+            document.getElementById("toDate").value;
+
+        const department =
+            document.getElementById("department").value;
+
+
+        let html = `
+
+            <div class="report-heading">
+
+                <h1>STATE DEPARTMENT FOR IMMIGRATION AND CITIZEN SERVICES</h1>
+
+                <h2>Fleet Management System</h2>
+
+                <h2>FUEL CONSUMPTION REPORT</h2>
+
+                <p>
+                    Detailed analysis of fuel consumed and fleet fuel expenditure
+                </p>
+
+            </div>
+
+
+            <div class="report-meta">
+
+                <div class="meta-box">
+                    <strong>Reporting Period</strong>
+                    <span>
+                        ${formatDate(from)} -
+                        ${formatDate(to)}
+                    </span>
+                </div>
+
+                <div class="meta-box">
+                    <strong>Department</strong>
+                    <span>${department}</span>
+                </div>
+
+                <div class="meta-box">
+                    <strong>Generated By</strong>
+                    <span>System Administrator</span>
+                </div>
+
+                <div class="meta-box">
+                    <strong>Report Reference</strong>
+                    <span>RPT-FUEL-${Date.now().toString().slice(-6)}</span>
+                </div>
+
+            </div>
+
+
+            <div class="report-summary">
+
+                <div class="report-summary-box">
+                    <div class="label">
+                        Total Fuel Consumed
+                    </div>
+                    <div class="value">
+                        ${formatNumber(totals.totalLitres)} L
+                    </div>
+                </div>
+
+                <div class="report-summary-box">
+                    <div class="label">
+                        Total Fuel Cost
+                    </div>
+                    <div class="value">
+                        ${formatCurrency(totals.totalCost)}
+                    </div>
+                </div>
+
+                <div class="report-summary-box">
+                    <div class="label">
+                        Total Distance
+                    </div>
+                    <div class="value">
+                        ${formatNumber(totals.totalDistance)} KM
+                    </div>
+                </div>
+
+                <div class="report-summary-box">
+                    <div class="label">
+                        Average Efficiency
+                    </div>
+                    <div class="value">
+                        ${totals.efficiency.toFixed(2)} KM/L
+                    </div>
+                </div>
+
+                <div class="report-summary-box">
+                    <div class="label">
+                        Average Cost / KM
+                    </div>
+                    <div class="value">
+                        ${formatCurrency(totals.costPerKm)}
+                    </div>
+                </div>
+
+            </div>
+
+
+            <h3 class="section-title">
+                Vehicle-by-Vehicle Fuel Consumption
+            </h3>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>Vehicle</th>
+                            <th>Driver</th>
+                            <th>Opening KM</th>
+                            <th>Closing KM</th>
+                            <th>Distance KM</th>
+                            <th>Fuel Consumed L</th>
+                            <th>Price/L</th>
+                            <th>Fuel Cost</th>
+                            <th>KM/L</th>
+                            <th>Cost/KM</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+        `;
+
+
+        if (records.length === 0) {
+
+            html += `
+                <tr>
+                    <td colspan="10"
+                        style="text-align:center;padding:25px;">
+                        No fuel records found for the selected criteria.
+                    </td>
+                </tr>
+            `;
+
+        } else {
+
+            records.forEach(record => {
+
+                const distance =
+                    record.closing - record.opening;
+
+                const cost =
+                    record.litres * record.price;
+
+                const efficiency =
+                    record.litres > 0
+                        ? distance / record.litres
+                        : 0;
+
+                const costPerKm =
+                    distance > 0
+                        ? cost / distance
+                        : 0;
+
+
+                html += `
+
+                    <tr>
+
+                        <td>
+                            <strong>${record.vehicle}</strong>
+                        </td>
+
+                        <td>${record.driver}</td>
+
+                        <td>
+                            ${formatNumber(record.opening)}
+                        </td>
+
+                        <td>
+                            ${formatNumber(record.closing)}
+                        </td>
+
+                        <td>
+                            ${formatNumber(distance)}
+                        </td>
+
+                        <td>
+                            <strong>
+                                ${formatNumber(record.litres)}
+                            </strong>
+                        </td>
+
+                        <td>
+                            ${formatCurrency(record.price)}
+                        </td>
+
+                        <td>
+                            ${formatCurrency(cost)}
+                        </td>
+
+                        <td>
+                            ${efficiency.toFixed(2)}
+                        </td>
+
+                        <td>
+                            ${formatCurrency(costPerKm)}
+                        </td>
+
+                    </tr>
+
+                `;
+
+            });
+
+        }
+
+
+        html += `
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <h3 class="section-title">
+                Fuel Transaction Details
+            </h3>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>Date</th>
+                            <th>Vehicle</th>
+                            <th>Driver</th>
+                            <th>Fuel Type</th>
+                            <th>Quantity (L)</th>
+                            <th>Price/L</th>
+                            <th>Total Cost</th>
+                            <th>Fuel Station</th>
+                            <th>Receipt/Voucher</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+        `;
+
+
+        records.forEach(record => {
+
+            const cost =
+                record.litres * record.price;
+
+
+            html += `
+
+                <tr>
+
+                    <td>
+                        ${formatDate(record.date)}
+                    </td>
+
+                    <td>
+                        ${record.vehicle}
+                    </td>
+
+                    <td>
+                        ${record.driver}
+                    </td>
+
+                    <td>
+                        ${record.fuelType}
+                    </td>
+
+                    <td>
+                        ${formatNumber(record.litres)}
+                    </td>
+
+                    <td>
+                        ${formatCurrency(record.price)}
+                    </td>
+
+                    <td>
+                        ${formatCurrency(cost)}
+                    </td>
+
+                    <td>
+                        ${record.station}
+                    </td>
+
+                    <td>
+                        ${record.receipt}
+                    </td>
+
+                </tr>
+
+            `;
+
+        });
+
+
+        html += `
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <h3 class="section-title">
+                Fuel Consumption Analysis
+            </h3>
+
+
+            <p style="
+                font-size:12px;
+                line-height:1.7;
+                color:#555;
+                margin-bottom:15px;
+            ">
+
+                The report records the actual quantity of fuel consumed
+                by each vehicle during the selected reporting period.
+                Fuel efficiency is calculated using distance travelled
+                divided by fuel consumed, while fuel cost per kilometre
+                is calculated using total fuel expenditure divided by
+                distance travelled.
+
+            </p>
+
+
+            <div class="report-footer">
+
+                <span>
+                    FleetMS | Fleet Management System
+                </span>
+
+                <span>
+                    Generated:
+                    ${new Date().toLocaleString("en-KE")}
+                </span>
+
+            </div>
+
+        `;
+
+
+        return html;
+
+    }
+
+
+    /* =====================================================
+       GENERIC REPORT
+    ===================================================== */
+
+    function buildGenericReport(type) {
+
+        let title =
+            reportNames[type] || "Fleet Report";
+
+
+        let rows = vehicles;
+
+
+        let html = `
+
+            <div class="report-heading">
+
+                <h1>
+                    STATE DEPARTMENT FOR IMMIGRATION AND CITIZEN SERVICES
+                </h1>
+
+                <h2>
+                    Fleet Management System
+                </h2>
+
+                <h2>
+                    ${title.toUpperCase()}
+                </h2>
+
+                <p>
+                    Official FleetMS Management Report
+                </p>
+
+            </div>
+
+
+            <div class="report-meta">
+
+                <div class="meta-box">
+                    <strong>Reporting Period</strong>
+                    <span>
+                        ${formatDate(
+                            document.getElementById("fromDate").value
+                        )}
+                        -
+                        ${formatDate(
+                            document.getElementById("toDate").value
+                        )}
+                    </span>
+                </div>
+
+                <div class="meta-box">
+                    <strong>Department</strong>
+                    <span>
+                        ${document.getElementById("department").value}
+                    </span>
+                </div>
+
+                <div class="meta-box">
+                    <strong>Generated By</strong>
+                    <span>System Administrator</span>
+                </div>
+
+                <div class="meta-box">
+                    <strong>Report Reference</strong>
+                    <span>
+                        RPT-${Date.now().toString().slice(-6)}
+                    </span>
+                </div>
+
+            </div>
+
+
+            <div class="report-summary">
+
+                <div class="report-summary-box">
+                    <div class="label">
+                        Total Vehicles
+                    </div>
+                    <div class="value">
+                        ${vehicles.length}
+                    </div>
+                </div>
+
+                <div class="report-summary-box">
+                    <div class="label">
+                        Active Vehicles
+                    </div>
+                    <div class="value">
+                        ${vehicles.filter(v =>
+                            v.status === "Active"
+                        ).length}
+                    </div>
+                </div>
+
+                <div class="report-summary-box">
+                    <div class="label">
+                        Available
+                    </div>
+                    <div class="value">
+                        ${vehicles.filter(v =>
+                            v.status === "Available"
+                        ).length}
+                    </div>
+                </div>
+
+                <div class="report-summary-box">
+                    <div class="label">
+                        Maintenance
+                    </div>
+                    <div class="value">
+                        ${vehicles.filter(v =>
+                            v.status === "Maintenance"
+                        ).length}
+                    </div>
+                </div>
+
+                <div class="report-summary-box">
+                    <div class="label">
+                        Data Records
+                    </div>
+                    <div class="value">
+                        12,486
+                    </div>
+                </div>
+
+            </div>
+
+
+            <h3 class="section-title">
+                Report Details
+            </h3>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Registration</th>
+                            <th>Make</th>
+                            <th>Model</th>
+                            <th>Category</th>
+                            <th>Department</th>
+                            <th>Driver</th>
+                            <th>Status</th>
+                            <th>Mileage</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+        `;
+
+
+        rows.forEach(vehicle => {
+
+            html += `
+
+                <tr>
+
+                    <td>
+                        <strong>
+                            ${vehicle.registration}
+                        </strong>
+                    </td>
+
+                    <td>
+                        ${vehicle.make}
+                    </td>
+
+                    <td>
+                        ${vehicle.model}
+                    </td>
+
+                    <td>
+                        ${vehicle.category}
+                    </td>
+
+                    <td>
+                        ${vehicle.department}
+                    </td>
+
+                    <td>
+                        ${vehicle.driver}
+                    </td>
+
+                    <td>
+                        ${vehicle.status}
+                    </td>
+
+                    <td>
+                        ${formatNumber(vehicle.mileage)} KM
+                    </td>
+
+                </tr>
+
+            `;
+
+        });
+
+
+        html += `
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <div class="report-footer">
+
+                <span>
+                    FleetMS | Fleet Management System
+                </span>
+
+                <span>
+                    Generated:
+                    ${new Date().toLocaleString("en-KE")}
+                </span>
+
+            </div>
+
+        `;
+
+
+        return html;
+
+    }
+
+
+    /* =====================================================
+       BUILD REPORT
+    ===================================================== */
+
+    function buildReport(type) {
+
+        if (type === "fuel-consumption") {
+
+            return buildFuelConsumptionReport();
+
+        }
+
+        return buildGenericReport(type);
+
+    }
+
+
+    /* =====================================================
+       PREVIEW REPORT
+    ===================================================== */
+
+    function previewReport(type = null) {
+
+        if (type) {
+
+            document.getElementById(
+                "reportType"
+            ).value = type;
+
+        }
+
+
+        const selectedType =
+            document.getElementById(
+                "reportType"
+            ).value;
+
+
+        document.getElementById(
+            "reportPreview"
+        ).innerHTML =
+            buildReport(selectedType);
+
+
+        document.getElementById(
+            "reportModal"
+        ).style.display = "block";
+
+    }
+
+
+    /* =====================================================
+       GENERATE REPORT
+    ===================================================== */
+
+    function generateReport() {
+
+        const type =
+            document.getElementById(
+                "reportType"
+            ).value;
+
+
+        alert(
+            reportNames[type] +
+            " generated successfully."
+        );
+
+
+        previewReport(type);
+
+    }
+
+
+    /* =====================================================
+       QUICK REPORT
+    ===================================================== */
+
+    function quickReport(type) {
+
+        document.getElementById(
+            "reportType"
+        ).value = type;
+
+
+        generateReport();
+
+    }
+
+
+    /* =====================================================
+       CLOSE PREVIEW
+    ===================================================== */
+
+    function closePreview() {
+
+        document.getElementById(
+            "reportModal"
+        ).style.display = "none";
+
+    }
+
+
+    /* =====================================================
+       PRINT REPORT
+    ===================================================== */
+
+    function printReport() {
+
+        window.print();
+
+    }
+
+
+    /* =====================================================
+       CSV EXPORT
+    ===================================================== */
+
+    function exportCSV() {
+
+        const type =
+            document.getElementById(
+                "reportType"
+            ).value;
+
+
+        if (type === "fuel-consumption") {
+
+            exportFuelCSV();
+
+        } else {
+
+            exportVehicleCSV();
+
+        }
+
+    }
+
+
+    /* =====================================================
+       FUEL CSV
+    ===================================================== */
+
+    function exportFuelCSV() {
+
+        const records =
+            getFuelRecords();
+
+
+        let csv = [
+
+            [
+                "Date",
+                "Vehicle",
+                "Driver",
+                "Fuel Type",
+                "Opening Odometer KM",
+                "Closing Odometer KM",
+                "Distance KM",
+                "Fuel Consumed Litres",
+                "Price Per Litre",
+                "Total Fuel Cost",
+                "KM Per Litre",
+                "Cost Per KM",
+                "Fuel Station",
+                "Receipt/Voucher"
+            ].join(",")
+
+        ];
+
+
+        records.forEach(record => {
+
+            const distance =
+                record.closing - record.opening;
+
+            const cost =
+                record.litres * record.price;
+
+            const efficiency =
+                record.litres > 0
+                    ? distance / record.litres
+                    : 0;
+
+            const costPerKm =
+                distance > 0
+                    ? cost / distance
+                    : 0;
+
+
+            csv.push([
+
+                record.date,
+                record.vehicle,
+                record.driver,
+                record.fuelType,
+                record.opening,
+                record.closing,
+                distance,
+                record.litres,
+                record.price,
+                cost.toFixed(2),
+                efficiency.toFixed(2),
+                costPerKm.toFixed(2),
+                record.station,
+                record.receipt
+
+            ].map(value => {
+
+                return `"${String(value)
+                    .replace(/"/g, '""')}"`;
+
+            }).join(","));
+
+        });
+
+
+        downloadCSV(
+            csv.join("\n"),
+            "FleetMS_Fuel_Consumption_Report.csv"
+        );
+
+    }
+
+
+    /* =====================================================
+       VEHICLE CSV
+    ===================================================== */
+
+    function exportVehicleCSV() {
+
+        let csv = [
+
+            [
+                "Registration",
+                "Make",
+                "Model",
+                "Category",
+                "Department",
+                "Driver",
+                "Status",
+                "Mileage"
+            ].join(",")
+
+        ];
+
+
+        vehicles.forEach(vehicle => {
+
+            csv.push([
+
+                vehicle.registration,
+                vehicle.make,
+                vehicle.model,
+                vehicle.category,
+                vehicle.department,
+                vehicle.driver,
+                vehicle.status,
+                vehicle.mileage
+
+            ].map(value => {
+
+                return `"${String(value)
+                    .replace(/"/g, '""')}"`;
+
+            }).join(","));
+
+        });
+
+
+        downloadCSV(
+            csv.join("\n"),
+            "FleetMS_Report.csv"
+        );
+
+    }
+
+
+    /* =====================================================
+       DOWNLOAD CSV
+    ===================================================== */
+
+    function downloadCSV(content, filename) {
+
+        const blob =
+            new Blob(
+                [content],
+                {
+                    type: "text/csv;charset=utf-8;"
+                }
+            );
+
+
+        const url =
+            URL.createObjectURL(blob);
+
+
+        const link =
+            document.createElement("a");
+
+
+        link.href = url;
+        link.download = filename;
+
+        document.body.appendChild(link);
+
+        link.click();
+
+        document.body.removeChild(link);
+
+        URL.revokeObjectURL(url);
+
+    }
+
+
+    /* =====================================================
+       DOWNLOAD CURRENT REPORT
+    ===================================================== */
+
+    function downloadCurrentReport() {
+
+        exportCSV();
+
+    }
+
+
+    /* =====================================================
+       LOGOUT
+    ===================================================== */
+
+    function logout() {
+
+        const confirmLogout =
+            confirm(
+                "Are you sure you want to logout?"
+            );
+
+
+        if (confirmLogout) {
+
+            window.location.href =
+                "login.html";
+
+        }
+
+    }
+
+
+    /* =====================================================
+       CLOSE MODAL WHEN CLICKING OUTSIDE
+    ===================================================== */
+
+    window.onclick = function(event) {
+
+        const modal =
+            document.getElementById(
+                "reportModal"
+            );
+
+
+        if (event.target === modal) {
+
+            closePreview();
+
+        }
+
+    };
+
+
+</script>
+
+</body>
+</html>

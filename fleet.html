@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Fleet Management System</title>
+
+    <style>
+
+        /* =========================
+           GENERAL STYLING
+        ========================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            color: #222;
+            background: #f5f7fa;
+            line-height: 1.6;
+        }
+
+
+        /* =========================
+           NAVIGATION BAR
+        ========================== */
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+
+            background: rgba(0, 0, 0, 0.88);
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 15px 6%;
+        }
+
+        .logo {
+            color: white;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #f4c430;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 15px;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #f4c430;
+        }
+
+        .login-btn {
+            background: #f4c430;
+            color: #111 !important;
+
+            padding: 9px 18px;
+            border-radius: 5px;
+
+            font-weight: bold;
+        }
+
+
+        /* =========================
+           HERO SECTION
+        ========================== */
+
+        .hero {
+
+            min-height: 100vh;
+
+            background-image:
+                linear-gradient(
+                    rgba(0, 0, 0, 0.55),
+                    rgba(0, 0, 0, 0.55)
+                ),
+                url("https://www.dubicars.com/images/ad2053/w_1300x760/nassem-al-sham-used-cars/d3fce2f2-9138-4a4b-809d-c8d9681aee5e.jpg");
+
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+
+            display: flex;
+            align-items: center;
+
+            padding: 100px 8% 60px;
+        }
+
+        .hero-content {
+            max-width: 650px;
+            color: white;
+        }
+
+        .hero-content h1 {
+            font-size: 52px;
+            line-height: 1.15;
+            margin-bottom: 20px;
+        }
+
+        .hero-content h1 span {
+            color: #f4c430;
+        }
+
+        .hero-content p {
+            font-size: 19px;
+            margin-bottom: 30px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .primary-btn,
+        .secondary-btn {
+            display: inline-block;
+
+            padding: 13px 25px;
+
+            border-radius: 5px;
+
+            text-decoration: none;
+
+            font-weight: bold;
+        }
+
+        .primary-btn {
+            background: #f4c430;
+            color: #111;
+        }
+
+        .secondary-btn {
+            border: 2px solid white;
+            color: white;
+        }
+
+        .primary-btn:hover {
+            background: white;
+        }
+
+        .secondary-btn:hover {
+            background: white;
+            color: #111;
+        }
+
+
+        /* =========================
+           GENERAL SECTION
+        ========================== */
+
+        section {
+            padding: 70px 7%;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 45px;
+        }
+
+        .section-title h2 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .section-title p {
+            color: #666;
+        }
+
+
+        /* =========================
+           STATISTICS
+        ========================== */
+
+        .statistics {
+            background: white;
+        }
+
+        .stats-container {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 25px;
+        }
+
+        .stat-card {
+            background: #f5f7fa;
+
+            padding: 30px 20px;
+
+            text-align: center;
+
+            border-radius: 10px;
+
+            border-bottom: 4px solid #f4c430;
+        }
+
+        .stat-card h3 {
+            font-size: 35px;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            color: #666;
+        }
+
+
+        /* =========================
+           FLEET MODULES
+        ========================== */
+
+        .modules {
+            background: #eef1f5;
+        }
+
+        .module-container {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 25px;
+        }
+
+        .module-card {
+            background: white;
+
+            padding: 30px;
+
+            border-radius: 10px;
+
+            box-shadow:
+                0 5px 15px rgba(0,0,0,0.08);
+
+            transition: 0.3s;
+        }
+
+        .module-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .module-icon {
+            font-size: 35px;
+            margin-bottom: 15px;
+        }
+
+        .module-card h3 {
+            margin-bottom: 10px;
+        }
+
+        .module-card p {
+            color: #666;
+        }
+
+
+        /* =========================
+           ABOUT FLEET SYSTEM
+        ========================== */
+
+        .about-container {
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 50px;
+
+            align-items: center;
+        }
+
+        .about-image {
+            width: 100%;
+            height: 350px;
+
+            object-fit: cover;
+
+            border-radius: 12px;
+        }
+
+        .about-text h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .about-text p {
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .about-list {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .about-list li {
+            margin-bottom: 10px;
+        }
+
+        .about-list li::before {
+            content: "✓";
+            color: #16803c;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+
+        /* =========================
+           FAQ
+        ========================== */
+
+        .faq {
+            background: white;
+        }
+
+        .faq-container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        details {
+            background: #f5f7fa;
+
+            margin-bottom: 12px;
+
+            padding: 18px 20px;
+
+            border-radius: 7px;
+
+            border-left: 4px solid #f4c430;
+        }
+
+        summary {
+            cursor: pointer;
+
+            font-weight: bold;
+
+            font-size: 17px;
+        }
+
+        details p {
+            margin-top: 12px;
+            color: #555;
+        }
+
+
+        /* =========================
+           CONTACT / CTA
+        ========================== */
+
+        .cta {
+            background:
+                linear-gradient(
+                    rgba(0,0,0,0.8),
+                    rgba(0,0,0,0.8)
+                );
+
+            color: white;
+
+            text-align: center;
+        }
+
+        .cta h2 {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .cta p {
+            margin-bottom: 25px;
+        }
+
+
+        /* =========================
+           FOOTER
+        ========================== */
+
+        footer {
+            background: #111;
+            color: white;
+
+            padding: 45px 7% 20px;
+        }
+
+        .footer-container {
+            display: grid;
+
+            grid-template-columns:
+                2fr 1fr 1fr;
+
+            gap: 40px;
+
+            margin-bottom: 30px;
+        }
+
+        footer h3 {
+            margin-bottom: 15px;
+            color: #f4c430;
+        }
+
+        footer p {
+            color: #bbb;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 8px;
+        }
+
+        .footer-links a {
+            color: #bbb;
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .copyright {
+            border-top: 1px solid #333;
+
+            padding-top: 20px;
+
+            text-align: center;
+
+            color: #888;
+
+            font-size: 14px;
+        }
+
+
+        /* =========================
+           RESPONSIVE DESIGN
+        ========================== */
+
+        @media (max-width: 900px) {
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero-content h1 {
+                font-size: 40px;
+            }
+
+            .stats-container {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .module-container {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .about-container {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+
+        @media (max-width: 600px) {
+
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+
+            .module-container {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-content h1 {
+                font-size: 32px;
+            }
+
+            .hero-content p {
+                font-size: 16px;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+            }
+
+            .primary-btn,
+            .secondary-btn {
+                text-align: center;
+            }
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+
+<!-- =========================
+     NAVIGATION
+========================== -->
+
+<nav>
+
+    <div class="logo">
+        Fleet<span>MS</span>
+    </div>
+
+    <ul class="nav-links">
+
+        <li>
+            <a href="#home">Home</a>
+        </li>
+
+        <li>
+            <a href="#about">About</a>
+        </li>
+
+        <li>
+            <a href="#fleet">Fleet</a>
+        </li>
+
+        <li>
+            <a href="#statistics">Statistics</a>
+        </li>
+
+        <li>
+            <a href="#faq">FAQs</a>
+        </li>
+
+        <li>
+            <a href="#contact">Contact</a>
+        </li>
+
+        <li>
+            <a href="#" class="login-btn">
+                Login
+            </a>
+        </li>
+
+    </ul>
+
+</nav>
+
+
+<!-- =========================
+     HERO
+========================== -->
+
+<section class="hero" id="home">
+
+    <div class="hero-content">
+
+        <h1>
+            Smart <span>Fleet Management</span>
+            System
+        </h1>
+
+        <p>
+            A centralized platform for efficient management,
+            monitoring, allocation and maintenance of
+            departmental vehicles.
+        </p>
+
+        <div class="hero-buttons">
+
+            <a href="#fleet" class="primary-btn">
+                Explore Fleet
+            </a>
+
+            <a href="#about" class="secondary-btn">
+                Learn More
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     ABOUT
+========================== -->
+
+<section id="about">
+
+    <div class="about-container">
+
+        <div>
+
+            <img
+                src="https://www.dubicars.com/images/ad2053/w_1300x760/nassem-al-sham-used-cars/d3fce2f2-9138-4a4b-809d-c8d9681aee5e.jpg"
+                alt="White Toyota Land Cruiser Prado"
+                class="about-image"
+            >
+
+        </div>
+
+
+        <div class="about-text">
+
+            <h2>
+                About the Fleet Management System
+            </h2>
+
+            <p>
+                The Fleet Management System provides a
+                centralized platform for managing departmental
+                vehicles and related fleet activities.
+            </p>
+
+            <p>
+                The system can support vehicle registration,
+                allocation, maintenance tracking, fuel
+                management, driver information, inspections
+                and reporting.
+            </p>
+
+            <ul class="about-list">
+
+                <li>
+                    Centralized vehicle records
+                </li>
+
+                <li>
+                    Vehicle allocation and tracking
+                </li>
+
+                <li>
+                    Maintenance management
+                </li>
+
+                <li>
+                    Fuel and mileage monitoring
+                </li>
+
+                <li>
+                    Reports and operational analytics
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     STATISTICS
+========================== -->
+
+<section class="statistics" id="statistics">
+
+    <div class="section-title">
+
+        <h2>
+            Fleet Overview
+        </h2>
+
+        <p>
+            Key fleet management indicators
+        </p>
+
+    </div>
+
+
+    <div class="stats-container">
+
+        <div class="stat-card">
+
+            <h3>248</h3>
+
+            <p>
+                Total Vehicles
+            </p>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <h3>216</h3>
+
+            <p>
+                Active Vehicles
+            </p>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <h3>18</h3>
+
+            <p>
+                Under Maintenance
+            </p>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <h3>14</h3>
+
+            <p>
+                Available Vehicles
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     FLEET MODULES
+========================== -->
+
+<section class="modules" id="fleet">
+
+    <div class="section-title">
+
+        <h2>
+            Fleet Management Modules
+        </h2>
+
+        <p>
+            Core functions of the fleet management platform
+        </p>
+
+    </div>
+
+
+    <div class="module-container">
+
+
+        <div class="module-card">
+
+            <div class="module-icon">
+                🚙
+            </div>
+
+            <h3>
+                Vehicle Management
+            </h3>
+
+            <p>
+                Register and maintain comprehensive records
+                for departmental vehicles including registration,
+                model, ownership and operational status.
+            </p>
+
+        </div>
+
+
+        <div class="module-card">
+
+            <div class="module-icon">
+                👨‍✈️
+            </div>
+
+            <h3>
+                Driver Management
+            </h3>
+
+            <p>
+                Manage driver records, assignments,
+                licences, authorization and vehicle
+                allocation.
+            </p>
+
+        </div>
+
+
+        <div class="module-card">
+
+            <div class="module-icon">
+                🔧
+            </div>
+
+            <h3>
+                Maintenance
+            </h3>
+
+            <p>
+                Track servicing, repairs, maintenance
+                schedules, costs and vehicle downtime.
+            </p>
+
+        </div>
+
+
+        <div class="module-card">
+
+            <div class="module-icon">
+                ⛽
+            </div>
+
+            <h3>
+                Fuel Management
+            </h3>
+
+            <p>
+                Record fuel consumption, mileage and
+                fuel-related transactions to support
+                accountability.
+            </p>
+
+        </div>
+
+
+        <div class="module-card">
+
+            <div class="module-icon">
+                📍
+            </div>
+
+            <h3>
+                Vehicle Allocation
+            </h3>
+
+            <p>
+                Manage vehicle requests, approvals,
+                assignments and operational deployment.
+            </p>
+
+        </div>
+
+
+        <div class="module-card">
+
+            <div class="module-icon">
+                📊
+            </div>
+
+            <h3>
+                Reports & Analytics
+            </h3>
+
+            <p>
+                Generate reports and dashboards to support
+                fleet monitoring, planning and management
+                decisions.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     FAQ
+========================== -->
+
+<section class="faq" id="faq">
+
+    <div class="section-title">
+
+        <h2>
+            Frequently Asked Questions
+        </h2>
+
+        <p>
+            Common questions about fleet management
+        </p>
+
+    </div>
+
+
+    <div class="faq-container">
+
+
+        <details>
+
+            <summary>
+                What is the Fleet Management System?
+            </summary>
+
+            <p>
+                It is a centralized system designed to manage
+                departmental vehicles, drivers, maintenance,
+                allocation, fuel records and fleet reports.
+            </p>
+
+        </details>
+
+
+        <details>
+
+            <summary>
+                How do I register a vehicle?
+            </summary>
+
+            <p>
+                Authorized users can access the vehicle
+                management module and enter the required
+                vehicle information before submitting the
+                record for registration.
+            </p>
+
+        </details>
+
+
+        <details>
+
+            <summary>
+                How can I request a vehicle?
+            </summary>
+
+            <p>
+                A user can submit a vehicle request through
+                the system. The request can then be reviewed
+                and approved by the relevant authorized officer.
+            </p>
+
+        </details>
+
+
+        <details>
+
+            <summary>
+                Can the system track vehicle maintenance?
+            </summary>
+
+            <p>
+                Yes. The maintenance module can be used to
+                record servicing, repairs, maintenance dates,
+                costs and other relevant information.
+            </p>
+
+        </details>
+
+
+        <details>
+
+            <summary>
+                Can the system generate reports?
+            </summary>
+
+            <p>
+                Yes. Fleet information can be organized into
+                reports to support monitoring, accountability,
+                planning and management decisions.
+            </p>
+
+        </details>
+
+
+        <details>
+
+            <summary>
+                Who can access the system?
+            </summary>
+
+            <p>
+                Access should be restricted to authorized
+                users according to their assigned roles
+                and permissions.
+            </p>
+
+        </details>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     CALL TO ACTION
+========================== -->
+
+<section class="cta" id="contact">
+
+    <h2>
+        Manage Your Fleet Efficiently
+    </h2>
+
+    <p>
+        Centralize vehicle information, improve
+        accountability and support efficient fleet
+        operations.
+    </p>
+
+    <a href="#" class="primary-btn">
+        Access Fleet System
+    </a>
+
+</section>
+
+
+<!-- =========================
+     FOOTER
+========================== -->
+
+<footer>
+
+    <div class="footer-container">
+
+
+        <div>
+
+            <h3>
+                FleetMS
+            </h3>
+
+            <p>
+                A centralized fleet management platform
+                designed to support efficient administration,
+                monitoring and management of departmental
+                vehicles.
+            </p>
+
+        </div>
+
+
+        <div>
+
+            <h3>
+                Quick Links
+            </h3>
+
+            <ul class="footer-links">
+
+                <li>
+                    <a href="#home">
+                        Home
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#about">
+                        About
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#fleet">
+                        Fleet
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#faq">
+                        FAQs
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <div>
+
+            <h3>
+                System
+            </h3>
+
+            <ul class="footer-links">
+
+                <li>
+                    Vehicle Management
+                </li>
+
+                <li>
+                    Driver Management
+                </li>
+
+                <li>
+                    Maintenance
+                </li>
+
+                <li>
+                    Reports
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+
+    <div class="copyright">
+
+        © 2026 Fleet Management System.
+        All Rights Reserved.
+
+    </div>
+
+</footer>
+
+
+</body>
+</html>

@@ -1,0 +1,2401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FleetMS | Vehicle Management</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f4f6f8;
+            color: #222;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        .navbar {
+            height: 65px;
+            background: #111;
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 30px;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #c9a227;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-icon {
+            width: 38px;
+            height: 38px;
+
+            background: #c9a227;
+            color: #111;
+
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-weight: bold;
+        }
+
+        .logout {
+            background: transparent;
+            border: 1px solid #777;
+            color: white;
+
+            padding: 8px 14px;
+            border-radius: 5px;
+
+            cursor: pointer;
+        }
+
+        .logout:hover {
+            background: #c9a227;
+            color: #111;
+        }
+
+
+        /* ================= LAYOUT ================= */
+
+        .layout {
+            display: flex;
+            min-height: calc(100vh - 65px);
+        }
+
+
+        /* ================= SIDEBAR ================= */
+
+        .sidebar {
+            width: 230px;
+            background: #1b1b1b;
+            color: white;
+
+            padding-top: 20px;
+
+            flex-shrink: 0;
+        }
+
+        .sidebar h3 {
+            padding: 0 20px 15px;
+
+            color: #aaa;
+
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            padding: 14px 20px;
+
+            color: #ddd;
+
+            cursor: pointer;
+
+            border-left: 3px solid transparent;
+
+            transition: .2s;
+        }
+
+        .menu-item:hover,
+        .menu-item.active {
+            background: #292929;
+
+            border-left-color: #c9a227;
+
+            color: white;
+        }
+
+
+        /* ================= MAIN ================= */
+
+        .main {
+            flex: 1;
+
+            padding: 30px;
+
+            min-width: 0;
+        }
+
+
+        /* ================= PAGE HEADER ================= */
+
+        .page-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+        }
+
+        .page-header p {
+            color: #777;
+
+            margin-top: 5px;
+        }
+
+
+        /* ================= BUTTONS ================= */
+
+        .btn {
+
+            padding: 11px 17px;
+
+            border: none;
+
+            border-radius: 6px;
+
+            cursor: pointer;
+
+            font-weight: bold;
+        }
+
+        .btn-primary {
+
+            background: #111;
+
+            color: white;
+        }
+
+        .btn-primary:hover {
+
+            background: #c9a227;
+
+            color: #111;
+        }
+
+        .btn-secondary {
+
+            background: white;
+
+            border: 1px solid #ccc;
+        }
+
+        .btn-danger {
+
+            background: #9b6b59;
+
+            color: white;
+        }
+
+
+        /* ================= SUMMARY ================= */
+
+        .summary {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 15px;
+
+            margin-bottom: 20px;
+        }
+
+        .summary-card {
+
+            background: white;
+
+            border: 1px solid #e0e0e0;
+
+            border-radius: 9px;
+
+            padding: 18px;
+        }
+
+        .summary-title {
+
+            color: #777;
+
+            font-size: 12px;
+
+            font-weight: bold;
+        }
+
+        .summary-number {
+
+            font-size: 28px;
+
+            font-weight: bold;
+
+            margin-top: 8px;
+        }
+
+
+        /* ================= CARD ================= */
+
+        .card {
+
+            background: white;
+
+            border: 1px solid #e0e0e0;
+
+            border-radius: 10px;
+
+            padding: 22px;
+
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 20px;
+        }
+
+        .card-header h2 {
+
+            font-size: 18px;
+        }
+
+        .card-header p {
+
+            color: #777;
+
+            font-size: 12px;
+
+            margin-top: 4px;
+        }
+
+
+        /* ================= FORM ================= */
+
+        .form-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 18px;
+        }
+
+        .form-group {
+
+            display: flex;
+
+            flex-direction: column;
+        }
+
+        .form-group.full {
+
+            grid-column:
+                1 / -1;
+        }
+
+        label {
+
+            font-size: 13px;
+
+            font-weight: bold;
+
+            margin-bottom: 7px;
+        }
+
+        input,
+        select {
+
+            padding: 11px;
+
+            border: 1px solid #ccc;
+
+            border-radius: 6px;
+
+            outline: none;
+
+            background: white;
+        }
+
+        input:focus,
+        select:focus {
+
+            border-color: #c9a227;
+
+            box-shadow:
+                0 0 0 2px
+                rgba(201,162,39,.12);
+        }
+
+        .form-actions {
+
+            margin-top: 20px;
+
+            display: flex;
+
+            justify-content: flex-end;
+
+            gap: 10px;
+        }
+
+
+        /* ================= TABLE ================= */
+
+        .table-tools {
+
+            display: flex;
+
+            gap: 10px;
+
+            flex-wrap: wrap;
+        }
+
+        .table-tools input,
+        .table-tools select {
+
+            min-width: 160px;
+        }
+
+        .table-container {
+
+            overflow-x: auto;
+        }
+
+        table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+            margin-top: 15px;
+        }
+
+        th,
+        td {
+
+            padding: 13px 10px;
+
+            text-align: left;
+
+            border-bottom: 1px solid #eee;
+
+            font-size: 13px;
+        }
+
+        th {
+
+            font-size: 11px;
+
+            text-transform: uppercase;
+
+            color: #777;
+        }
+
+        tr:hover {
+
+            background: #fafafa;
+        }
+
+
+        /* ================= STATUS ================= */
+
+        .status {
+
+            display: inline-block;
+
+            padding: 5px 9px;
+
+            border-radius: 20px;
+
+            font-size: 10px;
+
+            font-weight: bold;
+        }
+
+        .active {
+
+            background: #e4eee6;
+
+            color: #385b40;
+        }
+
+        .maintenance {
+
+            background: #f3e5df;
+
+            color: #744c3e;
+        }
+
+        .available {
+
+            background: #e5edf2;
+
+            color: #405d70;
+        }
+
+        .disposed {
+
+            background: #e7e7e7;
+
+            color: #555;
+        }
+
+
+        /* ================= ACTION BUTTONS ================= */
+
+        .action-btn {
+
+            border: none;
+
+            background: transparent;
+
+            cursor: pointer;
+
+            margin-right: 8px;
+
+            font-size: 12px;
+
+            text-decoration: underline;
+        }
+
+        .edit {
+
+            color: #405d70;
+        }
+
+        .delete {
+
+            color: #9b6b59;
+        }
+
+
+        /* ================= MODAL ================= */
+
+        .modal {
+
+            display: none;
+
+            position: fixed;
+
+            inset: 0;
+
+            background:
+                rgba(0,0,0,.65);
+
+            z-index: 2000;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 20px;
+        }
+
+        .modal-content {
+
+            background: white;
+
+            width: 600px;
+
+            max-width: 100%;
+
+            max-height: 90vh;
+
+            overflow-y: auto;
+
+            border-radius: 10px;
+
+            padding: 25px;
+        }
+
+        .modal-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            margin-bottom: 20px;
+        }
+
+        .close {
+
+            border: none;
+
+            background: transparent;
+
+            font-size: 25px;
+
+            cursor: pointer;
+        }
+
+
+        /* ================= FOOTER ================= */
+
+        .footer {
+
+            text-align: center;
+
+            padding: 20px;
+
+            color: #888;
+
+            font-size: 12px;
+        }
+
+
+        /* ================= RESPONSIVE ================= */
+
+        @media(max-width:1000px) {
+
+            .summary {
+
+                grid-template-columns:
+                    repeat(2,1fr);
+            }
+
+            .form-grid {
+
+                grid-template-columns:
+                    repeat(2,1fr);
+            }
+
+        }
+
+
+        @media(max-width:700px) {
+
+            .sidebar {
+
+                display: none;
+            }
+
+            .main {
+
+                padding: 20px;
+            }
+
+            .page-header {
+
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 15px;
+            }
+
+            .summary {
+
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+
+                grid-column: auto;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
+<nav class="navbar">
+
+    <div class="logo">
+
+        Fleet<span>MS</span>
+
+    </div>
+
+
+    <div class="nav-right">
+
+        <div class="user">
+
+            <div class="user-icon">
+                MM
+            </div>
+
+            <strong>
+                System Administrator
+            </strong>
+
+        </div>
+
+
+        <button
+            class="logout"
+            id="logoutBtn">
+
+            Logout
+
+        </button>
+
+    </div>
+
+</nav>
+
+
+
+<div class="layout">
+
+
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
+
+<aside class="sidebar">
+
+    <h3>
+        Fleet Management
+    </h3>
+
+
+    <div class="menu-item"
+         onclick="goTo('dashboard.html')">
+
+        📊 Dashboard
+
+    </div>
+
+
+    <div class="menu-item active">
+
+        🚗 Vehicles
+
+    </div>
+
+
+    <div class="menu-item"
+         onclick="alert('Driver Management module coming next.')">
+
+        👤 Drivers
+
+    </div>
+
+
+    <div class="menu-item"
+         onclick="alert('Maintenance module coming next.')">
+
+        🔧 Maintenance
+
+    </div>
+
+
+    <div class="menu-item"
+         onclick="alert('Fuel Management module coming next.')">
+
+        ⛽ Fuel Management
+
+    </div>
+
+
+    <div class="menu-item"
+         onclick="alert('Vehicle Requests module coming next.')">
+
+        📋 Vehicle Requests
+
+    </div>
+
+
+    <div class="menu-item"
+         onclick="alert('Reports module coming next.')">
+
+        📊 Reports
+
+    </div>
+
+
+    <div class="menu-item"
+         onclick="alert('User Management module coming next.')">
+
+        👥 Users
+
+    </div>
+
+
+    <div class="menu-item"
+         onclick="alert('System Settings coming next.')">
+
+        ⚙️ Settings
+
+    </div>
+
+</aside>
+
+
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
+<main class="main">
+
+
+<!-- PAGE HEADER -->
+
+<div class="page-header">
+
+    <div>
+
+        <h1>
+            Vehicle Management
+        </h1>
+
+        <p>
+            Register, manage and monitor government fleet vehicles.
+        </p>
+
+    </div>
+
+
+    <button
+        class="btn btn-primary"
+        id="showFormBtn">
+
+        + Register Vehicle
+
+    </button>
+
+</div>
+
+
+
+<!-- =====================================================
+     SUMMARY CARDS
+===================================================== -->
+
+<section class="summary">
+
+
+    <div class="summary-card">
+
+        <div class="summary-title">
+            TOTAL VEHICLES
+        </div>
+
+        <div
+            class="summary-number"
+            id="totalVehicles">
+
+            0
+
+        </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+        <div class="summary-title">
+            ACTIVE
+        </div>
+
+        <div
+            class="summary-number"
+            id="activeVehicles">
+
+            0
+
+        </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+        <div class="summary-title">
+            MAINTENANCE
+        </div>
+
+        <div
+            class="summary-number"
+            id="maintenanceVehicles">
+
+            0
+
+        </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+        <div class="summary-title">
+            AVAILABLE
+        </div>
+
+        <div
+            class="summary-number"
+            id="availableVehicles">
+
+            0
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     REGISTRATION FORM
+===================================================== -->
+
+<section
+    class="card"
+    id="registrationCard"
+    style="display:none;">
+
+    <div class="card-header">
+
+        <div>
+
+            <h2>
+                Register New Vehicle
+            </h2>
+
+            <p>
+                Enter the vehicle's official details.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <form id="vehicleForm">
+
+
+        <div class="form-grid">
+
+
+            <!-- Registration -->
+
+            <div class="form-group">
+
+                <label>
+                    Registration Number *
+                </label>
+
+                <input
+                    type="text"
+                    id="registration"
+                    placeholder="e.g. KDA 452A"
+                    required>
+
+            </div>
+
+
+            <!-- Make -->
+
+            <div class="form-group">
+
+                <label>
+                    Make *
+                </label>
+
+                <select
+                    id="make"
+                    required>
+
+                    <option value="">
+                        Select Make
+                    </option>
+
+                    <option>
+                        Toyota
+                    </option>
+
+                    <option>
+                        Isuzu
+                    </option>
+
+                    <option>
+                        Nissan
+                    </option>
+
+                    <option>
+                        Mitsubishi
+                    </option>
+
+                    <option>
+                        Ford
+                    </option>
+
+                    <option>
+                        Mercedes-Benz
+                    </option>
+
+                    <option>
+                        Other
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Model -->
+
+            <div class="form-group">
+
+                <label>
+                    Model *
+                </label>
+
+                <input
+                    type="text"
+                    id="model"
+                    placeholder="e.g. Land Cruiser Prado"
+                    required>
+
+            </div>
+
+
+            <!-- Category -->
+
+            <div class="form-group">
+
+                <label>
+                    Vehicle Category *
+                </label>
+
+                <select
+                    id="category"
+                    required>
+
+                    <option value="">
+                        Select Category
+                    </option>
+
+                    <option>
+                        Passenger
+                    </option>
+
+                    <option>
+                        Utility
+                    </option>
+
+                    <option>
+                        4×4 / SUV
+                    </option>
+
+                    <option>
+                        Bus / Van
+                    </option>
+
+                    <option>
+                        Specialized
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Year -->
+
+            <div class="form-group">
+
+                <label>
+                    Year of Manufacture *
+                </label>
+
+                <input
+                    type="number"
+                    id="year"
+                    min="1980"
+                    max="2026"
+                    placeholder="2024"
+                    required>
+
+            </div>
+
+
+            <!-- Fuel -->
+
+            <div class="form-group">
+
+                <label>
+                    Fuel Type *
+                </label>
+
+                <select
+                    id="fuel"
+                    required>
+
+                    <option value="">
+                        Select Fuel
+                    </option>
+
+                    <option>
+                        Petrol
+                    </option>
+
+                    <option>
+                        Diesel
+                    </option>
+
+                    <option>
+                        Hybrid
+                    </option>
+
+                    <option>
+                        Electric
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Chassis -->
+
+            <div class="form-group">
+
+                <label>
+                    Chassis / VIN Number
+                </label>
+
+                <input
+                    type="text"
+                    id="vin"
+                    placeholder="Enter VIN number">
+
+            </div>
+
+
+            <!-- Engine -->
+
+            <div class="form-group">
+
+                <label>
+                    Engine Number
+                </label>
+
+                <input
+                    type="text"
+                    id="engine"
+                    placeholder="Enter engine number">
+
+            </div>
+
+
+            <!-- Mileage -->
+
+            <div class="form-group">
+
+                <label>
+                    Current Mileage (KM)
+                </label>
+
+                <input
+                    type="number"
+                    id="mileage"
+                    min="0"
+                    placeholder="e.g. 85000">
+
+            </div>
+
+
+            <!-- Department -->
+
+            <div class="form-group">
+
+                <label>
+                    Department / Directorate
+                </label>
+
+                <select id="department">
+
+                    <option value="">
+                        Select Department
+                    </option>
+
+                    <option>
+                        Administration
+                    </option>
+
+                    <option>
+                        ICT
+                    </option>
+
+                    <option>
+                        Finance
+                    </option>
+
+                    <option>
+                        Human Resource
+                    </option>
+
+                    <option>
+                        Operations
+                    </option>
+
+                    <option>
+                        Field Operations
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Driver -->
+
+            <div class="form-group">
+
+                <label>
+                    Assigned Driver
+                </label>
+
+                <input
+                    type="text"
+                    id="driver"
+                    placeholder="Driver name">
+
+            </div>
+
+
+            <!-- Acquisition -->
+
+            <div class="form-group">
+
+                <label>
+                    Acquisition Date
+                </label>
+
+                <input
+                    type="date"
+                    id="acquisition">
+
+            </div>
+
+
+            <!-- Insurance -->
+
+            <div class="form-group">
+
+                <label>
+                    Insurance Expiry
+                </label>
+
+                <input
+                    type="date"
+                    id="insurance">
+
+            </div>
+
+
+            <!-- Status -->
+
+            <div class="form-group">
+
+                <label>
+                    Vehicle Status *
+                </label>
+
+                <select
+                    id="vehicleStatus"
+                    required>
+
+                    <option>
+                        Active
+                    </option>
+
+                    <option>
+                        Available
+                    </option>
+
+                    <option>
+                        Maintenance
+                    </option>
+
+                    <option>
+                        Disposed
+                    </option>
+
+                </select>
+
+            </div>
+
+
+        </div>
+
+
+        <div class="form-actions">
+
+            <button
+                type="button"
+                class="btn btn-secondary"
+                id="cancelBtn">
+
+                Cancel
+
+            </button>
+
+
+            <button
+                type="submit"
+                class="btn btn-primary">
+
+                Save Vehicle
+
+            </button>
+
+        </div>
+
+
+    </form>
+
+</section>
+
+
+
+<!-- =====================================================
+     VEHICLE REGISTER
+===================================================== -->
+
+<section class="card">
+
+
+    <div class="card-header">
+
+
+        <div>
+
+            <h2>
+                Vehicle Register
+            </h2>
+
+            <p id="resultCount">
+                Loading vehicles...
+            </p>
+
+        </div>
+
+
+        <div class="table-tools">
+
+            <input
+                type="search"
+                id="search"
+                placeholder="Search registration, make or model">
+
+
+            <select id="filterStatus">
+
+                <option value="all">
+                    All Statuses
+                </option>
+
+                <option value="Active">
+                    Active
+                </option>
+
+                <option value="Available">
+                    Available
+                </option>
+
+                <option value="Maintenance">
+                    Maintenance
+                </option>
+
+                <option value="Disposed">
+                    Disposed
+                </option>
+
+            </select>
+
+
+            <select id="filterCategory">
+
+                <option value="all">
+                    All Categories
+                </option>
+
+                <option>
+                    Passenger
+                </option>
+
+                <option>
+                    Utility
+                </option>
+
+                <option>
+                    4×4 / SUV
+                </option>
+
+                <option>
+                    Bus / Van
+                </option>
+
+                <option>
+                    Specialized
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Registration
+                    </th>
+
+                    <th>
+                        Vehicle
+                    </th>
+
+                    <th>
+                        Category
+                    </th>
+
+                    <th>
+                        Year
+                    </th>
+
+                    <th>
+                        Assigned Driver
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                    <th>
+                        Actions
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="vehicleTable">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+
+<div class="footer">
+
+    © 2026 Fleet Management System |
+    State Department for Immigration and Citizen Services
+
+</div>
+
+
+</main>
+
+</div>
+
+
+
+<!-- =====================================================
+     VEHICLE DETAILS MODAL
+===================================================== -->
+
+<div
+    class="modal"
+    id="detailsModal">
+
+
+    <div class="modal-content">
+
+
+        <div class="modal-header">
+
+            <h2>
+                Vehicle Details
+            </h2>
+
+            <button
+                class="close"
+                id="closeModal">
+
+                ×
+
+            </button>
+
+        </div>
+
+
+        <div id="vehicleDetails">
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script>
+
+
+/* =====================================================
+   DEMO VEHICLE DATABASE
+===================================================== */
+
+let vehicles = [
+
+    {
+        registration: "KDA 452A",
+        make: "Toyota",
+        model: "Land Cruiser Prado",
+        category: "4×4 / SUV",
+        year: 2023,
+        fuel: "Diesel",
+        vin: "JT123456789ABC",
+        engine: "EN452A",
+        mileage: 64200,
+        department: "Administration",
+        driver: "John Mwangi",
+        acquisition: "2023-05-12",
+        insurance: "2026-10-20",
+        status: "Maintenance"
+    },
+
+    {
+        registration: "KDG 918C",
+        make: "Toyota",
+        model: "Hilux",
+        category: "Utility",
+        year: 2022,
+        fuel: "Diesel",
+        vin: "JT987654321XYZ",
+        engine: "EN918C",
+        mileage: 82500,
+        department: "Operations",
+        driver: "Peter Kamau",
+        acquisition: "2022-07-10",
+        insurance: "2027-02-14",
+        status: "Active"
+    },
+
+    {
+        registration: "KDB 331B",
+        make: "Toyota",
+        model: "Land Cruiser",
+        category: "4×4 / SUV",
+        year: 2021,
+        fuel: "Diesel",
+        vin: "JT456789123LMN",
+        engine: "EN331B",
+        mileage: 104500,
+        department: "Field Operations",
+        driver: "David Mutua",
+        acquisition: "2021-04-18",
+        insurance: "2027-01-09",
+        status: "Active"
+    },
+
+    {
+        registration: "KDC 704D",
+        make: "Toyota",
+        model: "Corolla",
+        category: "Passenger",
+        year: 2024,
+        fuel: "Petrol",
+        vin: "JT741852963QWE",
+        engine: "EN704D",
+        mileage: 28500,
+        department: "ICT",
+        driver: "",
+        acquisition: "2024-02-15",
+        insurance: "2027-05-22",
+        status: "Available"
+    },
+
+    {
+        registration: "KDF 210E",
+        make: "Toyota",
+        model: "Hiace",
+        category: "Bus / Van",
+        year: 2020,
+        fuel: "Diesel",
+        vin: "JT159753486RTY",
+        engine: "EN210E",
+        mileage: 132000,
+        department: "Regional Office",
+        driver: "James Kariuki",
+        acquisition: "2020-09-05",
+        insurance: "2026-12-17",
+        status: "Active"
+    }
+
+];
+
+
+
+/* =====================================================
+   DISPLAY VEHICLES
+===================================================== */
+
+function displayVehicles() {
+
+    const table =
+        document.getElementById("vehicleTable");
+
+
+    const search =
+        document
+        .getElementById("search")
+        .value
+        .toLowerCase();
+
+
+    const status =
+        document
+        .getElementById("filterStatus")
+        .value;
+
+
+    const category =
+        document
+        .getElementById("filterCategory")
+        .value;
+
+
+    const filtered =
+        vehicles.filter(vehicle => {
+
+
+            const matchesSearch =
+
+                vehicle.registration
+                    .toLowerCase()
+                    .includes(search)
+
+                ||
+
+                vehicle.make
+                    .toLowerCase()
+                    .includes(search)
+
+                ||
+
+                vehicle.model
+                    .toLowerCase()
+                    .includes(search);
+
+
+            const matchesStatus =
+
+                status === "all"
+                ||
+                vehicle.status === status;
+
+
+            const matchesCategory =
+
+                category === "all"
+                ||
+                vehicle.category === category;
+
+
+            return (
+
+                matchesSearch
+                &&
+                matchesStatus
+                &&
+                matchesCategory
+
+            );
+
+        });
+
+
+    table.innerHTML = "";
+
+
+    filtered.forEach((vehicle, index) => {
+
+
+        let statusClass = "";
+
+
+        if (vehicle.status === "Active") {
+
+            statusClass = "active";
+
+        }
+
+        else if (
+            vehicle.status === "Maintenance"
+        ) {
+
+            statusClass = "maintenance";
+
+        }
+
+        else if (
+            vehicle.status === "Available"
+        ) {
+
+            statusClass = "available";
+
+        }
+
+        else {
+
+            statusClass = "disposed";
+
+        }
+
+
+        const row =
+            document.createElement("tr");
+
+
+        row.innerHTML = `
+
+            <td>
+                <strong>
+                    ${vehicle.registration}
+                </strong>
+            </td>
+
+            <td>
+                ${vehicle.make}
+                ${vehicle.model}
+            </td>
+
+            <td>
+                ${vehicle.category}
+            </td>
+
+            <td>
+                ${vehicle.year}
+            </td>
+
+            <td>
+                ${vehicle.driver || "Unassigned"}
+            </td>
+
+            <td>
+
+                <span class="status ${statusClass}">
+                    ${vehicle.status}
+                </span>
+
+            </td>
+
+            <td>
+
+                <button
+                    class="action-btn edit"
+                    onclick="viewVehicle(${vehicles.indexOf(vehicle)})">
+
+                    View
+
+                </button>
+
+
+                <button
+                    class="action-btn edit"
+                    onclick="editVehicle(${vehicles.indexOf(vehicle)})">
+
+                    Edit
+
+                </button>
+
+
+                <button
+                    class="action-btn delete"
+                    onclick="deleteVehicle(${vehicles.indexOf(vehicle)})">
+
+                    Delete
+
+                </button>
+
+            </td>
+
+        `;
+
+
+        table.appendChild(row);
+
+    });
+
+
+    document.getElementById("resultCount")
+        .textContent =
+        `Showing ${filtered.length}
+         of ${vehicles.length} vehicles`;
+
+
+    updateSummary();
+
+}
+
+
+
+/* =====================================================
+   UPDATE SUMMARY
+===================================================== */
+
+function updateSummary() {
+
+    document.getElementById(
+        "totalVehicles"
+    ).textContent =
+        vehicles.length;
+
+
+    document.getElementById(
+        "activeVehicles"
+    ).textContent =
+        vehicles.filter(
+            v => v.status === "Active"
+        ).length;
+
+
+    document.getElementById(
+        "maintenanceVehicles"
+    ).textContent =
+        vehicles.filter(
+            v => v.status === "Maintenance"
+        ).length;
+
+
+    document.getElementById(
+        "availableVehicles"
+    ).textContent =
+        vehicles.filter(
+            v => v.status === "Available"
+        ).length;
+
+}
+
+
+
+/* =====================================================
+   SHOW REGISTRATION FORM
+===================================================== */
+
+document
+    .getElementById("showFormBtn")
+    .addEventListener(
+        "click",
+        function() {
+
+            document
+                .getElementById(
+                    "registrationCard"
+                )
+                .style.display = "block";
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+        }
+    );
+
+
+
+/* =====================================================
+   CANCEL FORM
+===================================================== */
+
+document
+    .getElementById("cancelBtn")
+    .addEventListener(
+        "click",
+        function() {
+
+            document
+                .getElementById(
+                    "registrationCard"
+                )
+                .style.display = "none";
+
+
+            document
+                .getElementById(
+                    "vehicleForm"
+                )
+                .reset();
+
+        }
+    );
+
+
+
+/* =====================================================
+   SAVE VEHICLE
+===================================================== */
+
+document
+    .getElementById("vehicleForm")
+    .addEventListener(
+        "submit",
+        function(event) {
+
+            event.preventDefault();
+
+
+            const registration =
+                document
+                .getElementById("registration")
+                .value
+                .trim()
+                .toUpperCase();
+
+
+            /* Check duplicate registration */
+
+            const duplicate =
+                vehicles.some(
+                    vehicle =>
+                    vehicle.registration ===
+                    registration
+                );
+
+
+            if (duplicate) {
+
+                alert(
+                    "A vehicle with this registration number already exists."
+                );
+
+                return;
+
+            }
+
+
+            const vehicle = {
+
+                registration:
+
+                    registration,
+
+                make:
+
+                    document
+                    .getElementById("make")
+                    .value,
+
+                model:
+
+                    document
+                    .getElementById("model")
+                    .value,
+
+                category:
+
+                    document
+                    .getElementById("category")
+                    .value,
+
+                year:
+
+                    document
+                    .getElementById("year")
+                    .value,
+
+                fuel:
+
+                    document
+                    .getElementById("fuel")
+                    .value,
+
+                vin:
+
+                    document
+                    .getElementById("vin")
+                    .value,
+
+                engine:
+
+                    document
+                    .getElementById("engine")
+                    .value,
+
+                mileage:
+
+                    document
+                    .getElementById("mileage")
+                    .value || 0,
+
+                department:
+
+                    document
+                    .getElementById("department")
+                    .value,
+
+                driver:
+
+                    document
+                    .getElementById("driver")
+                    .value,
+
+                acquisition:
+
+                    document
+                    .getElementById("acquisition")
+                    .value,
+
+                insurance:
+
+                    document
+                    .getElementById("insurance")
+                    .value,
+
+                status:
+
+                    document
+                    .getElementById(
+                        "vehicleStatus"
+                    )
+                    .value
+
+            };
+
+
+            vehicles.push(vehicle);
+
+
+            alert(
+                "Vehicle registered successfully."
+            );
+
+
+            document
+                .getElementById(
+                    "vehicleForm"
+                )
+                .reset();
+
+
+            document
+                .getElementById(
+                    "registrationCard"
+                )
+                .style.display = "none";
+
+
+            displayVehicles();
+
+        }
+    );
+
+
+
+/* =====================================================
+   SEARCH
+===================================================== */
+
+document
+    .getElementById("search")
+    .addEventListener(
+        "input",
+        displayVehicles
+    );
+
+
+
+/* =====================================================
+   FILTERS
+===================================================== */
+
+document
+    .getElementById("filterStatus")
+    .addEventListener(
+        "change",
+        displayVehicles
+    );
+
+
+document
+    .getElementById("filterCategory")
+    .addEventListener(
+        "change",
+        displayVehicles
+    );
+
+
+
+/* =====================================================
+   VIEW VEHICLE
+===================================================== */
+
+function viewVehicle(index) {
+
+    const vehicle =
+        vehicles[index];
+
+
+    const details =
+        document.getElementById(
+            "vehicleDetails"
+        );
+
+
+    details.innerHTML = `
+
+        <p><strong>Registration:</strong>
+            ${vehicle.registration}</p>
+
+        <p><strong>Make:</strong>
+            ${vehicle.make}</p>
+
+        <p><strong>Model:</strong>
+            ${vehicle.model}</p>
+
+        <p><strong>Category:</strong>
+            ${vehicle.category}</p>
+
+        <p><strong>Year:</strong>
+            ${vehicle.year}</p>
+
+        <p><strong>Fuel:</strong>
+            ${vehicle.fuel}</p>
+
+        <p><strong>Chassis/VIN:</strong>
+            ${vehicle.vin || "Not provided"}</p>
+
+        <p><strong>Engine Number:</strong>
+            ${vehicle.engine || "Not provided"}</p>
+
+        <p><strong>Mileage:</strong>
+            ${Number(vehicle.mileage).toLocaleString()} KM</p>
+
+        <p><strong>Department:</strong>
+            ${vehicle.department || "Not assigned"}</p>
+
+        <p><strong>Driver:</strong>
+            ${vehicle.driver || "Unassigned"}</p>
+
+        <p><strong>Acquisition Date:</strong>
+            ${vehicle.acquisition || "Not provided"}</p>
+
+        <p><strong>Insurance Expiry:</strong>
+            ${vehicle.insurance || "Not provided"}</p>
+
+        <p><strong>Status:</strong>
+            ${vehicle.status}</p>
+
+    `;
+
+
+    document
+        .getElementById("detailsModal")
+        .style.display = "flex";
+
+}
+
+
+
+/* =====================================================
+   CLOSE MODAL
+===================================================== */
+
+document
+    .getElementById("closeModal")
+    .addEventListener(
+        "click",
+        function() {
+
+            document
+                .getElementById(
+                    "detailsModal"
+                )
+                .style.display = "none";
+
+        }
+    );
+
+
+
+/* =====================================================
+   EDIT VEHICLE
+===================================================== */
+
+function editVehicle(index) {
+
+    const vehicle =
+        vehicles[index];
+
+
+    document
+        .getElementById("registration")
+        .value =
+        vehicle.registration;
+
+
+    document
+        .getElementById("make")
+        .value =
+        vehicle.make;
+
+
+    document
+        .getElementById("model")
+        .value =
+        vehicle.model;
+
+
+    document
+        .getElementById("category")
+        .value =
+        vehicle.category;
+
+
+    document
+        .getElementById("year")
+        .value =
+        vehicle.year;
+
+
+    document
+        .getElementById("fuel")
+        .value =
+        vehicle.fuel;
+
+
+    document
+        .getElementById("vin")
+        .value =
+        vehicle.vin;
+
+
+    document
+        .getElementById("engine")
+        .value =
+        vehicle.engine;
+
+
+    document
+        .getElementById("mileage")
+        .value =
+        vehicle.mileage;
+
+
+    document
+        .getElementById("department")
+        .value =
+        vehicle.department;
+
+
+    document
+        .getElementById("driver")
+        .value =
+        vehicle.driver;
+
+
+    document
+        .getElementById("acquisition")
+        .value =
+        vehicle.acquisition;
+
+
+    document
+        .getElementById("insurance")
+        .value =
+        vehicle.insurance;
+
+
+    document
+        .getElementById("vehicleStatus")
+        .value =
+        vehicle.status;
+
+
+    document
+        .getElementById(
+            "registrationCard"
+        )
+        .style.display = "block";
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+
+    alert(
+        "Vehicle details loaded for editing.\n\n" +
+        "Note: this demo version loads the record into the form. " +
+        "The Django version will implement permanent database updates."
+    );
+
+}
+
+
+
+/* =====================================================
+   DELETE VEHICLE
+===================================================== */
+
+function deleteVehicle(index) {
+
+    const vehicle =
+        vehicles[index];
+
+
+    const confirmation =
+        confirm(
+
+            "Are you sure you want to delete " +
+            vehicle.registration +
+            " from the vehicle register?"
+
+        );
+
+
+    if (!confirmation) {
+
+        return;
+
+    }
+
+
+    vehicles.splice(index, 1);
+
+
+    displayVehicles();
+
+
+    alert(
+        "Vehicle record deleted."
+    );
+
+}
+
+
+
+/* =====================================================
+   SIDEBAR NAVIGATION
+===================================================== */
+
+function goTo(page) {
+
+    window.location.href = page;
+
+}
+
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+document
+    .getElementById("logoutBtn")
+    .addEventListener(
+        "click",
+        function() {
+
+            const confirmLogout =
+                confirm(
+                    "Are you sure you want to logout?"
+                );
+
+
+            if (confirmLogout) {
+
+                window.location.href =
+                    "login.html";
+
+            }
+
+        }
+    );
+
+
+
+/* =====================================================
+   INITIAL LOAD
+===================================================== */
+
+displayVehicles();
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,2505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FleetMS | Maintenance & Service</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f4f6f8;
+            color: #222;
+        }
+
+        /* =========================
+           NAVBAR
+        ========================== */
+
+        .navbar {
+            height: 65px;
+            background: #111;
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 25px;
+
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            color: #d4af37;
+        }
+
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-icon {
+            width: 38px;
+            height: 38px;
+
+            border-radius: 50%;
+
+            background: #d4af37;
+            color: #111;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-weight: bold;
+        }
+
+
+        /* =========================
+           SIDEBAR
+        ========================== */
+
+        .sidebar {
+            position: fixed;
+
+            top: 65px;
+            left: 0;
+            bottom: 0;
+
+            width: 235px;
+
+            background: #181818;
+            color: white;
+
+            padding-top: 20px;
+        }
+
+        .sidebar h3 {
+            padding: 0 20px 15px;
+
+            font-size: 13px;
+            color: #aaa;
+
+            text-transform: uppercase;
+        }
+
+        .sidebar a {
+            display: block;
+
+            color: #ddd;
+            text-decoration: none;
+
+            padding: 13px 20px;
+
+            font-size: 14px;
+
+            transition: 0.2s;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #292929;
+
+            color: #d4af37;
+
+            border-left: 4px solid #d4af37;
+        }
+
+
+        /* =========================
+           MAIN
+        ========================== */
+
+        .main {
+            margin-left: 235px;
+
+            padding: 90px 30px 40px;
+        }
+
+        .page-header {
+            display: flex;
+
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            font-size: 27px;
+
+            margin-bottom: 5px;
+        }
+
+        .page-header p {
+            color: #777;
+
+            font-size: 14px;
+        }
+
+
+        /* =========================
+           BUTTONS
+        ========================== */
+
+        .btn {
+            border: none;
+
+            padding: 11px 18px;
+
+            border-radius: 5px;
+
+            cursor: pointer;
+
+            font-weight: bold;
+
+            font-size: 13px;
+        }
+
+        .btn-primary {
+            background: #d4af37;
+            color: #111;
+        }
+
+        .btn-primary:hover {
+            background: #b9972f;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+
+        /* =========================
+           SUMMARY CARDS
+        ========================== */
+
+        .cards {
+            display: grid;
+
+            grid-template-columns: repeat(5, 1fr);
+
+            gap: 18px;
+
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: white;
+
+            padding: 20px;
+
+            border-radius: 8px;
+
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .card-title {
+            color: #777;
+
+            font-size: 12px;
+
+            margin-bottom: 8px;
+        }
+
+        .card-value {
+            font-size: 26px;
+
+            font-weight: bold;
+        }
+
+        .gold {
+            color: #c49a25;
+        }
+
+        .green {
+            color: #198754;
+        }
+
+        .red {
+            color: #dc3545;
+        }
+
+        .blue {
+            color: #0d6efd;
+        }
+
+        .orange {
+            color: #fd7e14;
+        }
+
+
+        /* =========================
+           FORM
+        ========================== */
+
+        .form-container {
+            background: white;
+
+            padding: 25px;
+
+            border-radius: 8px;
+
+            margin-bottom: 25px;
+
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+
+            display: none;
+        }
+
+        .form-container h2 {
+            margin-bottom: 20px;
+
+            font-size: 20px;
+        }
+
+        .form-grid {
+            display: grid;
+
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 17px;
+        }
+
+        .form-group {
+            display: flex;
+
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 13px;
+
+            font-weight: bold;
+
+            margin-bottom: 6px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+
+            padding: 10px;
+
+            border: 1px solid #ccc;
+
+            border-radius: 5px;
+
+            outline: none;
+        }
+
+        .form-group textarea {
+            min-height: 90px;
+
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+
+            border-color: #d4af37;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-buttons {
+            margin-top: 20px;
+
+            display: flex;
+
+            gap: 10px;
+        }
+
+
+        /* =========================
+           TABLE
+        ========================== */
+
+        .table-container {
+            background: white;
+
+            padding: 25px;
+
+            border-radius: 8px;
+
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .table-top {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 18px;
+
+            gap: 15px;
+        }
+
+        .table-top h2 {
+            font-size: 20px;
+        }
+
+        .filters {
+            display: flex;
+
+            gap: 10px;
+        }
+
+        .filters input,
+        .filters select {
+
+            padding: 9px;
+
+            border: 1px solid #ccc;
+
+            border-radius: 5px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #181818;
+
+            color: white;
+
+            padding: 12px;
+
+            text-align: left;
+
+            font-size: 12px;
+        }
+
+        td {
+            padding: 12px;
+
+            border-bottom: 1px solid #eee;
+
+            font-size: 12px;
+        }
+
+        tr:hover {
+            background: #fafafa;
+        }
+
+
+        /* =========================
+           STATUS
+        ========================== */
+
+        .status {
+            display: inline-block;
+
+            padding: 5px 9px;
+
+            border-radius: 20px;
+
+            font-size: 10px;
+
+            font-weight: bold;
+        }
+
+        .status-completed {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .status-progress {
+            background: #fff3cd;
+            color: #664d03;
+        }
+
+        .status-scheduled {
+            background: #cfe2ff;
+            color: #084298;
+        }
+
+        .status-overdue {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+
+        /* =========================
+           MAINTENANCE TYPE
+        ========================== */
+
+        .type {
+            padding: 5px 8px;
+
+            border-radius: 4px;
+
+            font-size: 10px;
+
+            font-weight: bold;
+
+            background: #eee;
+        }
+
+
+        /* =========================
+           ACTION BUTTONS
+        ========================== */
+
+        .action-btn {
+
+            border: none;
+
+            padding: 6px 9px;
+
+            border-radius: 4px;
+
+            cursor: pointer;
+
+            font-size: 10px;
+
+            margin-right: 3px;
+        }
+
+        .view {
+            background: #0d6efd;
+            color: white;
+        }
+
+        .edit {
+            background: #ffc107;
+            color: #111;
+        }
+
+        .delete {
+            background: #dc3545;
+            color: white;
+        }
+
+
+        /* =========================
+           MODAL
+        ========================== */
+
+        .modal {
+
+            display: none;
+
+            position: fixed;
+
+            inset: 0;
+
+            background: rgba(0,0,0,0.65);
+
+            z-index: 2000;
+
+            align-items: center;
+
+            justify-content: center;
+        }
+
+        .modal-content {
+
+            background: white;
+
+            width: 700px;
+
+            max-width: 95%;
+
+            border-radius: 8px;
+
+            padding: 25px;
+
+            max-height: 90vh;
+
+            overflow-y: auto;
+        }
+
+        .modal-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+        }
+
+        .close {
+
+            font-size: 24px;
+
+            cursor: pointer;
+        }
+
+        .details-grid {
+
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 15px;
+        }
+
+        .detail {
+
+            border-bottom: 1px solid #eee;
+
+            padding-bottom: 10px;
+        }
+
+        .detail label {
+
+            display: block;
+
+            color: #777;
+
+            font-size: 11px;
+
+            margin-bottom: 4px;
+        }
+
+        .detail span {
+
+            font-weight: bold;
+
+            font-size: 13px;
+        }
+
+
+        /* =========================
+           FOOTER
+        ========================== */
+
+        footer {
+
+            text-align: center;
+
+            margin-top: 35px;
+
+            color: #888;
+
+            font-size: 12px;
+        }
+
+
+        /* =========================
+           RESPONSIVE
+        ========================== */
+
+        @media(max-width: 1100px) {
+
+            .cards {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .form-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media(max-width: 700px) {
+
+            .sidebar {
+                width: 65px;
+            }
+
+            .sidebar h3,
+            .sidebar a span {
+                display: none;
+            }
+
+            .main {
+                margin-left: 65px;
+
+                padding: 85px 15px 30px;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header,
+            .table-top {
+                flex-direction: column;
+
+                align-items: flex-start;
+            }
+
+            .filters {
+                width: 100%;
+
+                flex-direction: column;
+            }
+
+            .filters input,
+            .filters select {
+                width: 100%;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     NAVBAR
+====================================================== -->
+
+<div class="navbar">
+
+    <div class="logo">
+        Fleet<span>MS</span>
+    </div>
+
+    <div class="user-area">
+
+        <div>
+            <strong>System Administrator</strong>
+        </div>
+
+        <div class="user-icon">
+            SA
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     SIDEBAR
+====================================================== -->
+
+<div class="sidebar">
+
+    <h3>Fleet Management</h3>
+
+    <a href="dashboard.html">
+        📊 <span>Dashboard</span>
+    </a>
+
+    <a href="vehicles.html">
+        🚙 <span>Vehicles</span>
+    </a>
+
+    <a href="drivers.html">
+        👤 <span>Drivers</span>
+    </a>
+
+    <a href="maintenance.html" class="active">
+        🔧 <span>Maintenance</span>
+    </a>
+
+    <a href="#">
+        ⛽ <span>Fuel Management</span>
+    </a>
+
+    <a href="#">
+        📋 <span>Vehicle Requests</span>
+    </a>
+
+    <a href="#">
+        📈 <span>Reports</span>
+    </a>
+
+    <a href="#">
+        👥 <span>Users</span>
+    </a>
+
+    <a href="#">
+        ⚙️ <span>Settings</span>
+    </a>
+
+    <a href="login.html" style="margin-top:30px;">
+        🚪 <span>Logout</span>
+    </a>
+
+</div>
+
+
+<!-- =====================================================
+     MAIN CONTENT
+====================================================== -->
+
+<div class="main">
+
+
+    <!-- PAGE HEADER -->
+
+    <div class="page-header">
+
+        <div>
+
+            <h1>Maintenance & Service Tracking</h1>
+
+            <p>
+                Monitor vehicle servicing, repairs, maintenance costs
+                and upcoming service requirements.
+            </p>
+
+        </div>
+
+        <button
+            class="btn btn-primary"
+            onclick="openMaintenanceForm()">
+
+            + Record Maintenance
+
+        </button>
+
+    </div>
+
+
+    <!-- =================================================
+         SUMMARY CARDS
+    ================================================== -->
+
+    <div class="cards">
+
+        <div class="card">
+
+            <div class="card-title">
+                Total Records
+            </div>
+
+            <div
+                class="card-value gold"
+                id="totalRecords">
+                0
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                Completed
+            </div>
+
+            <div
+                class="card-value green"
+                id="completedRecords">
+                0
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                In Progress
+            </div>
+
+            <div
+                class="card-value orange"
+                id="progressRecords">
+                0
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                Scheduled
+            </div>
+
+            <div
+                class="card-value blue"
+                id="scheduledRecords">
+                0
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                Overdue
+            </div>
+
+            <div
+                class="card-value red"
+                id="overdueRecords">
+                0
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         MAINTENANCE FORM
+    ================================================== -->
+
+    <div
+        class="form-container"
+        id="maintenanceForm">
+
+        <h2 id="formTitle">
+            Record Vehicle Maintenance
+        </h2>
+
+
+        <form id="maintenanceRegistrationForm">
+
+            <input
+                type="hidden"
+                id="editingId">
+
+
+            <div class="form-grid">
+
+
+                <!-- VEHICLE -->
+
+                <div class="form-group">
+
+                    <label>
+                        Vehicle Registration Number
+                    </label>
+
+                    <select
+                        id="vehicleRegistration"
+                        required>
+
+                        <option value="">
+                            Select Vehicle
+                        </option>
+
+                        <option value="KDA 452A">
+                            KDA 452A
+                        </option>
+
+                        <option value="KDG 918C">
+                            KDG 918C
+                        </option>
+
+                        <option value="KDB 331B">
+                            KDB 331B
+                        </option>
+
+                        <option value="KDK 784D">
+                            KDK 784D
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- SERVICE TYPE -->
+
+                <div class="form-group">
+
+                    <label>
+                        Maintenance Type
+                    </label>
+
+                    <select
+                        id="maintenanceType"
+                        required>
+
+                        <option value="">
+                            Select Type
+                        </option>
+
+                        <option value="Routine Service">
+                            Routine Service
+                        </option>
+
+                        <option value="Preventive Maintenance">
+                            Preventive Maintenance
+                        </option>
+
+                        <option value="Repair">
+                            Repair
+                        </option>
+
+                        <option value="Major Repair">
+                            Major Repair
+                        </option>
+
+                        <option value="Inspection">
+                            Inspection
+                        </option>
+
+                        <option value="Tyre Replacement">
+                            Tyre Replacement
+                        </option>
+
+                        <option value="Body Work">
+                            Body Work
+                        </option>
+
+                        <option value="Electrical">
+                            Electrical
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- SERVICE DATE -->
+
+                <div class="form-group">
+
+                    <label>
+                        Service Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="serviceDate"
+                        required>
+
+                </div>
+
+
+                <!-- CURRENT MILEAGE -->
+
+                <div class="form-group">
+
+                    <label>
+                        Mileage at Service (KM)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="mileage"
+                        min="0"
+                        required>
+
+                </div>
+
+
+                <!-- WORKSHOP -->
+
+                <div class="form-group">
+
+                    <label>
+                        Workshop / Service Provider
+                    </label>
+
+                    <input
+                        type="text"
+                        id="workshop"
+                        required>
+
+                </div>
+
+
+                <!-- JOB CARD -->
+
+                <div class="form-group">
+
+                    <label>
+                        Job Card / Reference No.
+                    </label>
+
+                    <input
+                        type="text"
+                        id="jobCard">
+
+                </div>
+
+
+                <!-- COST -->
+
+                <div class="form-group">
+
+                    <label>
+                        Maintenance Cost (KES)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="cost"
+                        min="0"
+                        step="0.01"
+                        required>
+
+                </div>
+
+
+                <!-- NEXT SERVICE DATE -->
+
+                <div class="form-group">
+
+                    <label>
+                        Next Service Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="nextServiceDate">
+
+                </div>
+
+
+                <!-- NEXT SERVICE MILEAGE -->
+
+                <div class="form-group">
+
+                    <label>
+                        Next Service Mileage (KM)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="nextServiceMileage"
+                        min="0">
+
+                </div>
+
+
+                <!-- STATUS -->
+
+                <div class="form-group">
+
+                    <label>
+                        Maintenance Status
+                    </label>
+
+                    <select
+                        id="maintenanceStatus"
+                        required>
+
+                        <option value="Completed">
+                            Completed
+                        </option>
+
+                        <option value="In Progress">
+                            In Progress
+                        </option>
+
+                        <option value="Scheduled">
+                            Scheduled
+                        </option>
+
+                        <option value="Overdue">
+                            Overdue
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- TECHNICIAN -->
+
+                <div class="form-group">
+
+                    <label>
+                        Technician / Mechanic
+                    </label>
+
+                    <input
+                        type="text"
+                        id="technician">
+
+                </div>
+
+
+                <!-- DESCRIPTION -->
+
+                <div class="form-group full-width">
+
+                    <label>
+                        Work / Repair Description
+                    </label>
+
+                    <textarea
+                        id="description"
+                        placeholder="Describe the work carried out...">
+                    </textarea>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="form-buttons">
+
+                <button
+                    type="submit"
+                    class="btn btn-primary">
+
+                    Save Maintenance Record
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    onclick="closeMaintenanceForm()">
+
+                    Cancel
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- =================================================
+         MAINTENANCE REGISTER
+    ================================================== -->
+
+    <div class="table-container">
+
+
+        <div class="table-top">
+
+            <h2>
+                Maintenance Register
+            </h2>
+
+
+            <div class="filters">
+
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search vehicle / workshop..."
+                    onkeyup="filterRecords()">
+
+
+                <select
+                    id="statusFilter"
+                    onchange="filterRecords()">
+
+                    <option value="">
+                        All Statuses
+                    </option>
+
+                    <option value="Completed">
+                        Completed
+                    </option>
+
+                    <option value="In Progress">
+                        In Progress
+                    </option>
+
+                    <option value="Scheduled">
+                        Scheduled
+                    </option>
+
+                    <option value="Overdue">
+                        Overdue
+                    </option>
+
+                </select>
+
+
+                <select
+                    id="typeFilter"
+                    onchange="filterRecords()">
+
+                    <option value="">
+                        All Maintenance Types
+                    </option>
+
+                    <option value="Routine Service">
+                        Routine Service
+                    </option>
+
+                    <option value="Preventive Maintenance">
+                        Preventive Maintenance
+                    </option>
+
+                    <option value="Repair">
+                        Repair
+                    </option>
+
+                    <option value="Major Repair">
+                        Major Repair
+                    </option>
+
+                    <option value="Inspection">
+                        Inspection
+                    </option>
+
+                    <option value="Tyre Replacement">
+                        Tyre Replacement
+                    </option>
+
+                    <option value="Body Work">
+                        Body Work
+                    </option>
+
+                    <option value="Electrical">
+                        Electrical
+                    </option>
+
+                </select>
+
+
+            </div>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Vehicle</th>
+
+                        <th>Maintenance Type</th>
+
+                        <th>Service Date</th>
+
+                        <th>Mileage</th>
+
+                        <th>Workshop</th>
+
+                        <th>Cost (KES)</th>
+
+                        <th>Next Service</th>
+
+                        <th>Status</th>
+
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="maintenanceTableBody"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <footer>
+
+        Fleet Management System © 2026 |
+        State Department
+
+    </footer>
+
+</div>
+
+
+<!-- =====================================================
+     DETAILS MODAL
+====================================================== -->
+
+<div
+    class="modal"
+    id="maintenanceModal">
+
+    <div class="modal-content">
+
+
+        <div class="modal-header">
+
+            <h2>
+                Maintenance Details
+            </h2>
+
+            <span
+                class="close"
+                onclick="closeModal()">
+
+                &times;
+
+            </span>
+
+        </div>
+
+
+        <div
+            class="details-grid"
+            id="maintenanceDetails">
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+/* =====================================================
+   DEMO MAINTENANCE DATABASE
+====================================================== */
+
+let maintenanceRecords = [
+
+    {
+        id: 1,
+
+        vehicle: "KDA 452A",
+
+        type: "Routine Service",
+
+        serviceDate: "2026-09-10",
+
+        mileage: 78540,
+
+        workshop: "Government Transport Workshop",
+
+        jobCard: "JC-2026-001",
+
+        cost: 18500,
+
+        nextServiceDate: "2026-12-10",
+
+        nextServiceMileage: 83500,
+
+        status: "Completed",
+
+        technician: "Peter Kamau",
+
+        description:
+            "Engine oil change, oil filter replacement, air filter inspection and general vehicle inspection."
+    },
+
+
+    {
+        id: 2,
+
+        vehicle: "KDG 918C",
+
+        type: "Major Repair",
+
+        serviceDate: "2026-09-18",
+
+        mileage: 112450,
+
+        workshop: "AutoCare Centre",
+
+        jobCard: "JC-2026-002",
+
+        cost: 87500,
+
+        nextServiceDate: "2026-12-18",
+
+        nextServiceMileage: 117500,
+
+        status: "In Progress",
+
+        technician: "James Mwangi",
+
+        description:
+            "Brake system repair and replacement of worn suspension components."
+    },
+
+
+    {
+        id: 3,
+
+        vehicle: "KDB 331B",
+
+        type: "Preventive Maintenance",
+
+        serviceDate: "2026-08-20",
+
+        mileage: 94520,
+
+        workshop: "Government Transport Workshop",
+
+        jobCard: "JC-2026-003",
+
+        cost: 24500,
+
+        nextServiceDate: "2026-11-20",
+
+        nextServiceMileage: 99500,
+
+        status: "Scheduled",
+
+        technician: "Samuel Otieno",
+
+        description:
+            "Scheduled preventive maintenance and inspection."
+    },
+
+
+    {
+        id: 4,
+
+        vehicle: "KDK 784D",
+
+        type: "Tyre Replacement",
+
+        serviceDate: "2026-07-15",
+
+        mileage: 62100,
+
+        workshop: "National Tyres Centre",
+
+        jobCard: "JC-2026-004",
+
+        cost: 64000,
+
+        nextServiceDate: "2026-10-15",
+
+        nextServiceMileage: 67000,
+
+        status: "Overdue",
+
+        technician: "David Kiptoo",
+
+        description:
+            "Replacement of four worn tyres and wheel alignment."
+    },
+
+
+    {
+        id: 5,
+
+        vehicle: "KDA 452A",
+
+        type: "Electrical",
+
+        serviceDate: "2026-09-02",
+
+        mileage: 77320,
+
+        workshop: "Auto Electrical Services",
+
+        jobCard: "JC-2026-005",
+
+        cost: 12500,
+
+        nextServiceDate: "",
+
+        nextServiceMileage: "",
+
+        status: "Completed",
+
+        technician: "John Mutua",
+
+        description:
+            "Battery replacement and electrical system diagnosis."
+    }
+
+];
+
+
+/* =====================================================
+   OPEN FORM
+====================================================== */
+
+function openMaintenanceForm() {
+
+    document.getElementById(
+        "maintenanceForm"
+    ).style.display = "block";
+
+
+    document.getElementById(
+        "formTitle"
+    ).textContent =
+        "Record Vehicle Maintenance";
+
+
+    document.getElementById(
+        "maintenanceRegistrationForm"
+    ).reset();
+
+
+    document.getElementById(
+        "editingId"
+    ).value = "";
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+/* =====================================================
+   CLOSE FORM
+====================================================== */
+
+function closeMaintenanceForm() {
+
+    document.getElementById(
+        "maintenanceForm"
+    ).style.display = "none";
+
+
+    document.getElementById(
+        "maintenanceRegistrationForm"
+    ).reset();
+
+
+    document.getElementById(
+        "editingId"
+    ).value = "";
+
+}
+
+
+/* =====================================================
+   STATUS BADGE
+====================================================== */
+
+function statusBadge(status) {
+
+    let className =
+        "status-completed";
+
+
+    if (status === "In Progress") {
+
+        className =
+            "status-progress";
+
+    }
+
+
+    if (status === "Scheduled") {
+
+        className =
+            "status-scheduled";
+
+    }
+
+
+    if (status === "Overdue") {
+
+        className =
+            "status-overdue";
+
+    }
+
+
+    return `
+        <span class="status ${className}">
+            ${status}
+        </span>
+    `;
+
+}
+
+
+/* =====================================================
+   DISPLAY RECORDS
+====================================================== */
+
+function displayRecords(list = maintenanceRecords) {
+
+    const tbody =
+        document.getElementById(
+            "maintenanceTableBody"
+        );
+
+
+    tbody.innerHTML = "";
+
+
+    if (list.length === 0) {
+
+        tbody.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="9"
+                    style="text-align:center;padding:25px;">
+
+                    No maintenance records found.
+
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+
+    }
+
+
+    list.forEach(record => {
+
+
+        const row =
+            document.createElement("tr");
+
+
+        row.innerHTML = `
+
+            <td>
+                <strong>
+                    ${record.vehicle}
+                </strong>
+            </td>
+
+
+            <td>
+
+                <span class="type">
+
+                    ${record.type}
+
+                </span>
+
+            </td>
+
+
+            <td>
+                ${record.serviceDate}
+            </td>
+
+
+            <td>
+                ${Number(record.mileage).toLocaleString()}
+            </td>
+
+
+            <td>
+                ${record.workshop}
+            </td>
+
+
+            <td>
+                KES ${Number(record.cost).toLocaleString()}
+            </td>
+
+
+            <td>
+                ${record.nextServiceDate || "-"}
+            </td>
+
+
+            <td>
+                ${statusBadge(record.status)}
+            </td>
+
+
+            <td>
+
+                <button
+                    class="action-btn view"
+                    onclick="viewRecord(${record.id})">
+
+                    View
+
+                </button>
+
+
+                <button
+                    class="action-btn edit"
+                    onclick="editRecord(${record.id})">
+
+                    Edit
+
+                </button>
+
+
+                <button
+                    class="action-btn delete"
+                    onclick="deleteRecord(${record.id})">
+
+                    Delete
+
+                </button>
+
+            </td>
+
+        `;
+
+
+        tbody.appendChild(row);
+
+    });
+
+
+    updateStatistics();
+
+}
+
+
+/* =====================================================
+   UPDATE STATISTICS
+====================================================== */
+
+function updateStatistics() {
+
+
+    document.getElementById(
+        "totalRecords"
+    ).textContent =
+        maintenanceRecords.length;
+
+
+    document.getElementById(
+        "completedRecords"
+    ).textContent =
+
+        maintenanceRecords.filter(
+            r => r.status === "Completed"
+        ).length;
+
+
+    document.getElementById(
+        "progressRecords"
+    ).textContent =
+
+        maintenanceRecords.filter(
+            r => r.status === "In Progress"
+        ).length;
+
+
+    document.getElementById(
+        "scheduledRecords"
+    ).textContent =
+
+        maintenanceRecords.filter(
+            r => r.status === "Scheduled"
+        ).length;
+
+
+    document.getElementById(
+        "overdueRecords"
+    ).textContent =
+
+        maintenanceRecords.filter(
+            r => r.status === "Overdue"
+        ).length;
+
+}
+
+
+/* =====================================================
+   FILTER RECORDS
+====================================================== */
+
+function filterRecords() {
+
+
+    const search =
+
+        document.getElementById(
+            "searchInput"
+        ).value.toLowerCase();
+
+
+    const status =
+
+        document.getElementById(
+            "statusFilter"
+        ).value;
+
+
+    const type =
+
+        document.getElementById(
+            "typeFilter"
+        ).value;
+
+
+    const filtered =
+
+        maintenanceRecords.filter(record => {
+
+
+            const matchesSearch =
+
+                record.vehicle
+                    .toLowerCase()
+                    .includes(search)
+
+                ||
+
+                record.workshop
+                    .toLowerCase()
+                    .includes(search)
+
+                ||
+
+                record.jobCard
+                    .toLowerCase()
+                    .includes(search);
+
+
+            const matchesStatus =
+
+                !status ||
+
+                record.status === status;
+
+
+            const matchesType =
+
+                !type ||
+
+                record.type === type;
+
+
+            return (
+
+                matchesSearch &&
+
+                matchesStatus &&
+
+                matchesType
+
+            );
+
+        });
+
+
+    displayRecords(filtered);
+
+}
+
+
+/* =====================================================
+   SAVE RECORD
+====================================================== */
+
+document
+
+    .getElementById(
+        "maintenanceRegistrationForm"
+    )
+
+    .addEventListener(
+        "submit",
+        function(event) {
+
+
+            event.preventDefault();
+
+
+            const editingId =
+
+                document.getElementById(
+                    "editingId"
+                ).value;
+
+
+            const recordData = {
+
+
+                vehicle:
+
+                    document.getElementById(
+                        "vehicleRegistration"
+                    ).value,
+
+
+                type:
+
+                    document.getElementById(
+                        "maintenanceType"
+                    ).value,
+
+
+                serviceDate:
+
+                    document.getElementById(
+                        "serviceDate"
+                    ).value,
+
+
+                mileage:
+
+                    document.getElementById(
+                        "mileage"
+                    ).value,
+
+
+                workshop:
+
+                    document.getElementById(
+                        "workshop"
+                    ).value.trim(),
+
+
+                jobCard:
+
+                    document.getElementById(
+                        "jobCard"
+                    ).value.trim(),
+
+
+                cost:
+
+                    document.getElementById(
+                        "cost"
+                    ).value,
+
+
+                nextServiceDate:
+
+                    document.getElementById(
+                        "nextServiceDate"
+                    ).value,
+
+
+                nextServiceMileage:
+
+                    document.getElementById(
+                        "nextServiceMileage"
+                    ).value,
+
+
+                status:
+
+                    document.getElementById(
+                        "maintenanceStatus"
+                    ).value,
+
+
+                technician:
+
+                    document.getElementById(
+                        "technician"
+                    ).value.trim(),
+
+
+                description:
+
+                    document.getElementById(
+                        "description"
+                    ).value.trim()
+
+            };
+
+
+            /* EDIT */
+
+            if (editingId) {
+
+
+                const index =
+
+                    maintenanceRecords.findIndex(
+
+                        r => r.id == editingId
+
+                    );
+
+
+                if (index !== -1) {
+
+
+                    maintenanceRecords[index] = {
+
+                        ...maintenanceRecords[index],
+
+                        ...recordData
+
+                    };
+
+
+                    alert(
+                        "Maintenance record updated successfully."
+                    );
+
+                }
+
+            }
+
+
+            /* NEW RECORD */
+
+            else {
+
+
+                maintenanceRecords.push({
+
+                    id: Date.now(),
+
+                    ...recordData
+
+                });
+
+
+                alert(
+                    "Maintenance record saved successfully."
+                );
+
+            }
+
+
+            closeMaintenanceForm();
+
+
+            displayRecords();
+
+        }
+
+    );
+
+
+/* =====================================================
+   VIEW RECORD
+====================================================== */
+
+function viewRecord(id) {
+
+
+    const record =
+
+        maintenanceRecords.find(
+            r => r.id === id
+        );
+
+
+    if (!record) return;
+
+
+    const details =
+
+        document.getElementById(
+            "maintenanceDetails"
+        );
+
+
+    details.innerHTML = `
+
+
+        <div class="detail">
+
+            <label>
+                Vehicle Registration
+            </label>
+
+            <span>
+                ${record.vehicle}
+            </span>
+
+        </div>
+
+
+        <div class="detail">
+
+            <label>
+                Maintenance Type
+            </label>
+
+            <span>
+                ${record.type}
+            </span>
+
+        </div>
+
+
+        <div class="detail">
+
+            <label>
+                Service Date
+            </label>
+
+            <span>
+                ${record.serviceDate}
+            </span>
+
+        </div>
+
+
+        <div class="detail">
+
+            <label>
+                Mileage at Service
+            </label>
+
+            <span>
+                ${Number(record.mileage).toLocaleString()} KM
+            </span>
+
+        </div>
+
+
+        <div class="detail">
+
+            <label>
+                Workshop / Service Provider
+            </label>
+
+            <span>
+                ${record.workshop}
+            </span>
+
+        </div>
+
+
+        <div class="detail">
+
+            <label>
+                Job Card Number
+            </label>
+
+            <span>
+                ${record.jobCard || "-"}
+            </span>
+
+        </div>
+
+
+        <div class="detail">
+
+            <label>
+                Maintenance Cost
+            </label>
+
+            <span>
+                KES ${Number(record.cost).toLocaleString()}
+            </span>
+
+        </div>
+
+
+        <div class="detail">
+
+            <label>
+                Next Service Date
+            </label>
+
+            <span>
+                ${record.nextServiceDate || "-"}
+            </span>
+
+        </div>
+
+
+        <div class="detail">
+
+            <label>
+                Next Service Mileage
+            </label>
+
+            <span>
+                ${
+                    record.nextServiceMileage
+                    ? Number(
+                        record.nextServiceMileage
+                    ).toLocaleString() + " KM"
+                    : "-"
+                }
+            </span>
+
+        </div>
+
+
+        <div class="detail">
+
+            <label>
+                Technician
+            </label>
+
+            <span>
+                ${record.technician || "-"}
+            </span>
+
+        </div>
+
+
+        <div class="detail">
+
+            <label>
+                Status
+            </label>
+
+            <span>
+                ${statusBadge(record.status)}
+            </span>
+
+        </div>
+
+
+        <div
+            class="detail"
+            style="grid-column:1/-1;">
+
+            <label>
+                Work / Repair Description
+            </label>
+
+            <span>
+                ${record.description || "-"}
+            </span>
+
+        </div>
+
+
+    `;
+
+
+    document.getElementById(
+        "maintenanceModal"
+    ).style.display = "flex";
+
+}
+
+
+/* =====================================================
+   CLOSE MODAL
+====================================================== */
+
+function closeModal() {
+
+    document.getElementById(
+        "maintenanceModal"
+    ).style.display = "none";
+
+}
+
+
+/* =====================================================
+   EDIT RECORD
+====================================================== */
+
+function editRecord(id) {
+
+
+    const record =
+
+        maintenanceRecords.find(
+            r => r.id === id
+        );
+
+
+    if (!record) return;
+
+
+    document.getElementById(
+        "maintenanceForm"
+    ).style.display = "block";
+
+
+    document.getElementById(
+        "formTitle"
+    ).textContent =
+        "Edit Maintenance Record";
+
+
+    document.getElementById(
+        "editingId"
+    ).value = record.id;
+
+
+    document.getElementById(
+        "vehicleRegistration"
+    ).value = record.vehicle;
+
+
+    document.getElementById(
+        "maintenanceType"
+    ).value = record.type;
+
+
+    document.getElementById(
+        "serviceDate"
+    ).value = record.serviceDate;
+
+
+    document.getElementById(
+        "mileage"
+    ).value = record.mileage;
+
+
+    document.getElementById(
+        "workshop"
+    ).value = record.workshop;
+
+
+    document.getElementById(
+        "jobCard"
+    ).value = record.jobCard;
+
+
+    document.getElementById(
+        "cost"
+    ).value = record.cost;
+
+
+    document.getElementById(
+        "nextServiceDate"
+    ).value = record.nextServiceDate;
+
+
+    document.getElementById(
+        "nextServiceMileage"
+    ).value =
+        record.nextServiceMileage;
+
+
+    document.getElementById(
+        "maintenanceStatus"
+    ).value = record.status;
+
+
+    document.getElementById(
+        "technician"
+    ).value = record.technician;
+
+
+    document.getElementById(
+        "description"
+    ).value = record.description;
+
+
+    window.scrollTo({
+
+        top: 0,
+
+        behavior: "smooth"
+
+    });
+
+}
+
+
+/* =====================================================
+   DELETE RECORD
+====================================================== */
+
+function deleteRecord(id) {
+
+
+    const record =
+
+        maintenanceRecords.find(
+            r => r.id === id
+        );
+
+
+    if (!record) return;
+
+
+    const confirmed =
+
+        confirm(
+
+            `Delete maintenance record for ${record.vehicle}?`
+
+        );
+
+
+    if (!confirmed) return;
+
+
+    maintenanceRecords =
+
+        maintenanceRecords.filter(
+            r => r.id !== id
+        );
+
+
+    displayRecords();
+
+
+    alert(
+        "Maintenance record deleted."
+    );
+
+}
+
+
+/* =====================================================
+   CLOSE MODAL OUTSIDE CLICK
+====================================================== */
+
+window.onclick = function(event) {
+
+
+    const modal =
+
+        document.getElementById(
+            "maintenanceModal"
+        );
+
+
+    if (event.target === modal) {
+
+        modal.style.display = "none";
+
+    }
+
+};
+
+
+/* =====================================================
+   INITIAL LOAD
+====================================================== */
+
+displayRecords();
+
+</script>
+
+</body>
+</html>

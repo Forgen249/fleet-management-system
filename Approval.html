@@ -1,0 +1,1600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FleetMS | Vehicle Requests</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+        background: #f4f6f8;
+        color: #222;
+    }
+
+    /* ================= NAVBAR ================= */
+
+    .navbar {
+        height: 65px;
+        background: #111;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 25px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+    }
+
+    .logo {
+        font-size: 22px;
+        font-weight: bold;
+        color: #fff;
+    }
+
+    .logo span {
+        color: #d4af37;
+    }
+
+    .user-area {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .user-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: #d4af37;
+        color: #111;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+
+    /* ================= SIDEBAR ================= */
+
+    .sidebar {
+        width: 240px;
+        background: #1a1a1a;
+        position: fixed;
+        top: 65px;
+        bottom: 0;
+        left: 0;
+        padding-top: 20px;
+        color: white;
+    }
+
+    .sidebar a {
+        display: block;
+        color: #ccc;
+        text-decoration: none;
+        padding: 14px 25px;
+        transition: 0.3s;
+        cursor: pointer;
+    }
+
+    .sidebar a:hover,
+    .sidebar a.active {
+        background: #292929;
+        color: #d4af37;
+        border-left: 4px solid #d4af37;
+    }
+
+    .sidebar .section-title {
+        font-size: 11px;
+        color: #777;
+        padding: 18px 25px 8px;
+        text-transform: uppercase;
+    }
+
+    /* ================= MAIN ================= */
+
+    .main {
+        margin-left: 240px;
+        padding: 95px 30px 40px;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+    .page-header h1 {
+        font-size: 27px;
+    }
+
+    .page-header p {
+        color: #777;
+        margin-top: 5px;
+    }
+
+    .btn {
+        border: none;
+        padding: 11px 17px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .btn-primary {
+        background: #d4af37;
+        color: #111;
+    }
+
+    .btn-primary:hover {
+        background: #b99621;
+    }
+
+    .btn-secondary {
+        background: #555;
+        color: white;
+    }
+
+    .btn-success {
+        background: #198754;
+        color: white;
+    }
+
+    .btn-danger {
+        background: #dc3545;
+        color: white;
+    }
+
+    .btn-info {
+        background: #0d6efd;
+        color: white;
+    }
+
+    /* ================= SUMMARY CARDS ================= */
+
+    .cards {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 18px;
+        margin-bottom: 25px;
+    }
+
+    .card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .card-title {
+        font-size: 13px;
+        color: #777;
+        margin-bottom: 10px;
+    }
+
+    .card-value {
+        font-size: 27px;
+        font-weight: bold;
+    }
+
+    .pending {
+        color: #f0ad4e;
+    }
+
+    .approved {
+        color: #198754;
+    }
+
+    .allocated {
+        color: #0d6efd;
+    }
+
+    .completed {
+        color: #6f42c1;
+    }
+
+    .rejected {
+        color: #dc3545;
+    }
+
+    /* ================= FILTER ================= */
+
+    .filter-box {
+        background: white;
+        padding: 18px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .filter-box input,
+    .filter-box select {
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        min-width: 180px;
+    }
+
+    /* ================= TABLE ================= */
+
+    .table-container {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+    th,
+    td {
+        padding: 13px 10px;
+        border-bottom: 1px solid #eee;
+        text-align: left;
+        font-size: 13px;
+    }
+
+    th {
+        background: #f8f9fa;
+        color: #555;
+    }
+
+    tr:hover {
+        background: #fafafa;
+    }
+
+    /* ================= STATUS ================= */
+
+    .status {
+        padding: 5px 9px;
+        border-radius: 15px;
+        font-size: 11px;
+        font-weight: bold;
+        display: inline-block;
+    }
+
+    .status-pending {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .status-approved {
+        background: #d1e7dd;
+        color: #0f5132;
+    }
+
+    .status-rejected {
+        background: #f8d7da;
+        color: #842029;
+    }
+
+    .status-allocated {
+        background: #cfe2ff;
+        color: #084298;
+    }
+
+    .status-progress {
+        background: #cff4fc;
+        color: #055160;
+    }
+
+    .status-completed {
+        background: #e2d9f3;
+        color: #432874;
+    }
+
+    /* ================= MODAL ================= */
+
+    .modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.6);
+        z-index: 2000;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .modal-content {
+        background: white;
+        width: 850px;
+        max-width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        border-radius: 9px;
+        padding: 25px;
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 15px;
+        margin-bottom: 20px;
+    }
+
+    .close {
+        font-size: 25px;
+        cursor: pointer;
+        color: #777;
+    }
+
+    /* ================= FORM ================= */
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group.full {
+        grid-column: 1 / -1;
+    }
+
+    .form-group label {
+        font-size: 13px;
+        font-weight: bold;
+        margin-bottom: 6px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        outline: none;
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 80px;
+    }
+
+    .form-actions {
+        margin-top: 20px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    /* ================= DETAILS ================= */
+
+    .details-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    .detail-item {
+        background: #f8f9fa;
+        padding: 13px;
+        border-radius: 5px;
+    }
+
+    .detail-item strong {
+        display: block;
+        color: #777;
+        font-size: 12px;
+        margin-bottom: 5px;
+    }
+
+    /* ================= APPROVAL ================= */
+
+    .approval-box {
+        margin-top: 20px;
+        border-top: 1px solid #eee;
+        padding-top: 20px;
+    }
+
+    .approval-box h3 {
+        margin-bottom: 15px;
+    }
+
+    /* ================= RESPONSIVE ================= */
+
+    @media(max-width: 1100px) {
+        .cards {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @media(max-width: 800px) {
+        .sidebar {
+            width: 190px;
+        }
+
+        .main {
+            margin-left: 190px;
+        }
+
+        .form-grid,
+        .details-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media(max-width: 600px) {
+        .sidebar {
+            display: none;
+        }
+
+        .main {
+            margin-left: 0;
+            padding: 90px 15px 30px;
+        }
+
+        .cards {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<div class="navbar">
+
+    <div class="logo">
+        Fleet<span>MS</span>
+    </div>
+
+    <div class="user-area">
+        <span>System Administrator</span>
+        <div class="user-icon">SA</div>
+    </div>
+
+</div>
+
+
+<!-- ================= SIDEBAR ================= -->
+
+<div class="sidebar">
+
+    <div class="section-title">Main</div>
+
+    <a onclick="navigate('dashboard.html')">
+        Dashboard
+    </a>
+
+    <a onclick="navigate('vehicles.html')">
+        Vehicle Management
+    </a>
+
+    <a onclick="navigate('drivers.html')">
+        Driver Management
+    </a>
+
+    <div class="section-title">Fleet Operations</div>
+
+    <a onclick="navigate('maintenance.html')">
+        Maintenance
+    </a>
+
+    <a onclick="navigate('fuel.html')">
+        Fuel & Mileage
+    </a>
+
+    <a class="active">
+        Vehicle Requests
+    </a>
+
+    <a onclick="navigate('reports.html')">
+        Reports & Analytics
+    </a>
+
+    <div class="section-title">Administration</div>
+
+    <a onclick="navigate('users.html')">
+        Users & Roles
+    </a>
+
+    <a onclick="navigate('settings.html')">
+        Settings
+    </a>
+
+    <a onclick="logout()">
+        Logout
+    </a>
+
+</div>
+
+
+<!-- ================= MAIN CONTENT ================= -->
+
+<div class="main">
+
+    <div class="page-header">
+
+        <div>
+            <h1>Vehicle Request & Approval</h1>
+            <p>Manage vehicle requests, approvals, allocation and trip completion.</p>
+        </div>
+
+        <button class="btn btn-primary" onclick="openRequestForm()">
+            + New Vehicle Request
+        </button>
+
+    </div>
+
+
+    <!-- ================= SUMMARY ================= -->
+
+    <div class="cards">
+
+        <div class="card">
+            <div class="card-title">Total Requests</div>
+            <div class="card-value" id="totalRequests">0</div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Pending Approval</div>
+            <div class="card-value pending" id="pendingRequests">0</div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Approved</div>
+            <div class="card-value approved" id="approvedRequests">0</div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Allocated</div>
+            <div class="card-value allocated" id="allocatedRequests">0</div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Completed</div>
+            <div class="card-value completed" id="completedRequests">0</div>
+        </div>
+
+    </div>
+
+
+    <!-- ================= FILTERS ================= -->
+
+    <div class="filter-box">
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search request, department or destination..."
+            onkeyup="filterRequests()"
+        >
+
+        <select id="statusFilter" onchange="filterRequests()">
+            <option value="">All Statuses</option>
+            <option value="Pending Approval">Pending Approval</option>
+            <option value="Approved">Approved</option>
+            <option value="Rejected">Rejected</option>
+            <option value="Allocated">Allocated</option>
+            <option value="Trip in Progress">Trip in Progress</option>
+            <option value="Completed">Completed</option>
+        </select>
+
+        <select id="purposeFilter" onchange="filterRequests()">
+            <option value="">All Purposes</option>
+            <option value="Official Trip">Official Trip</option>
+            <option value="Field Work">Field Work</option>
+            <option value="Meeting">Meeting</option>
+            <option value="Training">Training</option>
+            <option value="Inspection">Inspection</option>
+        </select>
+
+        <button class="btn btn-secondary" onclick="resetFilters()">
+            Reset
+        </button>
+
+    </div>
+
+
+    <!-- ================= REQUEST TABLE ================= -->
+
+    <div class="table-container">
+
+        <h3>Vehicle Request Register</h3>
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Request No.</th>
+                    <th>Requester</th>
+                    <th>Department</th>
+                    <th>Purpose</th>
+                    <th>Destination</th>
+                    <th>Date</th>
+                    <th>Vehicle</th>
+                    <th>Driver</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+
+            </thead>
+
+            <tbody id="requestTableBody"></tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<!-- ================= REQUEST FORM MODAL ================= -->
+
+<div class="modal" id="requestModal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2 id="formTitle">New Vehicle Request</h2>
+
+            <span class="close" onclick="closeRequestForm()">
+                &times;
+            </span>
+
+        </div>
+
+
+        <form id="requestForm">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Requester's Name</label>
+                    <input type="text" id="requester" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Department / Directorate</label>
+                    <input type="text" id="department" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Request Date</label>
+                    <input type="date" id="requestDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Required Date</label>
+                    <input type="date" id="requiredDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Departure Time</label>
+                    <input type="time" id="departureTime" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Expected Return Time</label>
+                    <input type="time" id="returnTime">
+                </div>
+
+                <div class="form-group">
+                    <label>Purpose</label>
+
+                    <select id="purpose" required>
+                        <option value="">Select Purpose</option>
+                        <option>Official Trip</option>
+                        <option>Field Work</option>
+                        <option>Meeting</option>
+                        <option>Training</option>
+                        <option>Inspection</option>
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+                    <label>Number of Passengers</label>
+                    <input type="number" id="passengers" min="1" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Destination</label>
+                    <input type="text" id="destination" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Vehicle Type Required</label>
+
+                    <select id="vehicleType">
+                        <option>Any Available Vehicle</option>
+                        <option>Saloon</option>
+                        <option>Station Wagon</option>
+                        <option>4x4 / SUV</option>
+                        <option>Pickup</option>
+                        <option>Minibus</option>
+                        <option>Specialized Vehicle</option>
+                    </select>
+
+                </div>
+
+                <div class="form-group full">
+                    <label>Additional Information / Justification</label>
+
+                    <textarea
+                        id="justification"
+                        placeholder="Enter any additional information or justification..."
+                    ></textarea>
+
+                </div>
+
+            </div>
+
+            <div class="form-actions">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    onclick="closeRequestForm()">
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary">
+                    Submit Request
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- ================= DETAILS MODAL ================= -->
+
+<div class="modal" id="detailsModal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2>Vehicle Request Details</h2>
+
+            <span class="close" onclick="closeDetails()">
+                &times;
+            </span>
+
+        </div>
+
+        <div id="requestDetails"></div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   DEMO REQUEST DATABASE
+========================================================= */
+
+let requests = [
+
+    {
+        id: "VR-2026-001",
+        requester: "John Mwangi",
+        department: "ICT Division",
+        requestDate: "2026-09-20",
+        requiredDate: "2026-09-25",
+        departureTime: "08:00",
+        returnTime: "17:00",
+        purpose: "Official Trip",
+        passengers: 4,
+        destination: "Mombasa",
+        vehicleType: "4x4 / SUV",
+        justification: "Official departmental assignment.",
+        vehicle: "KDA 452A",
+        driver: "Peter Kamau",
+        status: "Allocated"
+    },
+
+    {
+        id: "VR-2026-002",
+        requester: "Mary Wanjiku",
+        department: "Human Resource",
+        requestDate: "2026-09-21",
+        requiredDate: "2026-09-27",
+        departureTime: "07:30",
+        returnTime: "18:00",
+        purpose: "Training",
+        passengers: 8,
+        destination: "Nakuru",
+        vehicleType: "Minibus",
+        justification: "Staff training programme.",
+        vehicle: "",
+        driver: "",
+        status: "Pending Approval"
+    },
+
+    {
+        id: "VR-2026-003",
+        requester: "David Otieno",
+        department: "Operations",
+        requestDate: "2026-09-18",
+        requiredDate: "2026-09-23",
+        departureTime: "08:00",
+        returnTime: "16:00",
+        purpose: "Inspection",
+        passengers: 3,
+        destination: "Machakos",
+        vehicleType: "Station Wagon",
+        justification: "Field inspection.",
+        vehicle: "KDG 918C",
+        driver: "James Mutua",
+        status: "Approved"
+    },
+
+    {
+        id: "VR-2026-004",
+        requester: "Jane Njeri",
+        department: "Finance",
+        requestDate: "2026-09-15",
+        requiredDate: "2026-09-19",
+        departureTime: "09:00",
+        returnTime: "15:00",
+        purpose: "Meeting",
+        passengers: 2,
+        destination: "Nairobi CBD",
+        vehicleType: "Saloon",
+        justification: "Official meeting.",
+        vehicle: "",
+        driver: "",
+        status: "Rejected"
+    },
+
+    {
+        id: "VR-2026-005",
+        requester: "Brian Kiptoo",
+        department: "Field Services",
+        requestDate: "2026-09-12",
+        requiredDate: "2026-09-14",
+        departureTime: "06:30",
+        returnTime: "18:00",
+        purpose: "Field Work",
+        passengers: 5,
+        destination: "Kajiado",
+        vehicleType: "4x4 / SUV",
+        justification: "Field operations.",
+        vehicle: "KDB 331B",
+        driver: "Samuel Kiptoo",
+        status: "Completed"
+    }
+
+];
+
+
+/* =========================================================
+   DISPLAY REQUESTS
+========================================================= */
+
+function displayRequests(data = requests) {
+
+    const tbody = document.getElementById("requestTableBody");
+
+    tbody.innerHTML = "";
+
+    data.forEach(request => {
+
+        let statusClass = "";
+
+        switch(request.status) {
+
+            case "Pending Approval":
+                statusClass = "status-pending";
+                break;
+
+            case "Approved":
+                statusClass = "status-approved";
+                break;
+
+            case "Rejected":
+                statusClass = "status-rejected";
+                break;
+
+            case "Allocated":
+                statusClass = "status-allocated";
+                break;
+
+            case "Trip in Progress":
+                statusClass = "status-progress";
+                break;
+
+            case "Completed":
+                statusClass = "status-completed";
+                break;
+
+        }
+
+
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+
+            <td><strong>${request.id}</strong></td>
+
+            <td>${request.requester}</td>
+
+            <td>${request.department}</td>
+
+            <td>${request.purpose}</td>
+
+            <td>${request.destination}</td>
+
+            <td>${request.requiredDate}</td>
+
+            <td>${request.vehicle || "-"}</td>
+
+            <td>${request.driver || "-"}</td>
+
+            <td>
+                <span class="status ${statusClass}">
+                    ${request.status}
+                </span>
+            </td>
+
+            <td>
+
+                <button
+                    class="btn btn-info"
+                    onclick="viewRequest('${request.id}')">
+                    View
+                </button>
+
+            </td>
+
+        `;
+
+        tbody.appendChild(row);
+
+    });
+
+    updateStats();
+
+}
+
+
+/* =========================================================
+   UPDATE STATISTICS
+========================================================= */
+
+function updateStats() {
+
+    document.getElementById("totalRequests").textContent =
+        requests.length;
+
+    document.getElementById("pendingRequests").textContent =
+        requests.filter(r => r.status === "Pending Approval").length;
+
+    document.getElementById("approvedRequests").textContent =
+        requests.filter(r => r.status === "Approved").length;
+
+    document.getElementById("allocatedRequests").textContent =
+        requests.filter(r => r.status === "Allocated").length;
+
+    document.getElementById("completedRequests").textContent =
+        requests.filter(r => r.status === "Completed").length;
+}
+
+
+/* =========================================================
+   OPEN REQUEST FORM
+========================================================= */
+
+function openRequestForm() {
+
+    document.getElementById("requestModal").style.display = "flex";
+
+    document.getElementById("formTitle").textContent =
+        "New Vehicle Request";
+
+    document.getElementById("requestForm").reset();
+
+    document.getElementById("requestDate").value =
+        new Date().toISOString().split("T")[0];
+}
+
+
+/* =========================================================
+   CLOSE REQUEST FORM
+========================================================= */
+
+function closeRequestForm() {
+
+    document.getElementById("requestModal").style.display = "none";
+
+}
+
+
+/* =========================================================
+   SUBMIT REQUEST
+========================================================= */
+
+document.getElementById("requestForm").addEventListener(
+    "submit",
+    function(event) {
+
+        event.preventDefault();
+
+        const requestNumber =
+            "VR-2026-" +
+            String(requests.length + 1).padStart(3, "0");
+
+
+        const newRequest = {
+
+            id: requestNumber,
+
+            requester:
+                document.getElementById("requester").value,
+
+            department:
+                document.getElementById("department").value,
+
+            requestDate:
+                document.getElementById("requestDate").value,
+
+            requiredDate:
+                document.getElementById("requiredDate").value,
+
+            departureTime:
+                document.getElementById("departureTime").value,
+
+            returnTime:
+                document.getElementById("returnTime").value,
+
+            purpose:
+                document.getElementById("purpose").value,
+
+            passengers:
+                document.getElementById("passengers").value,
+
+            destination:
+                document.getElementById("destination").value,
+
+            vehicleType:
+                document.getElementById("vehicleType").value,
+
+            justification:
+                document.getElementById("justification").value,
+
+            vehicle: "",
+
+            driver: "",
+
+            status: "Pending Approval"
+
+        };
+
+
+        requests.unshift(newRequest);
+
+        displayRequests();
+
+        closeRequestForm();
+
+        alert(
+            "Vehicle request " +
+            requestNumber +
+            " has been submitted successfully."
+        );
+
+    }
+);
+
+
+/* =========================================================
+   VIEW REQUEST
+========================================================= */
+
+function viewRequest(id) {
+
+    const request =
+        requests.find(r => r.id === id);
+
+    if (!request) return;
+
+
+    const container =
+        document.getElementById("requestDetails");
+
+
+    container.innerHTML = `
+
+        <div class="details-grid">
+
+            <div class="detail-item">
+                <strong>Request Number</strong>
+                ${request.id}
+            </div>
+
+            <div class="detail-item">
+                <strong>Status</strong>
+                ${request.status}
+            </div>
+
+            <div class="detail-item">
+                <strong>Requester</strong>
+                ${request.requester}
+            </div>
+
+            <div class="detail-item">
+                <strong>Department</strong>
+                ${request.department}
+            </div>
+
+            <div class="detail-item">
+                <strong>Request Date</strong>
+                ${request.requestDate}
+            </div>
+
+            <div class="detail-item">
+                <strong>Required Date</strong>
+                ${request.requiredDate}
+            </div>
+
+            <div class="detail-item">
+                <strong>Departure Time</strong>
+                ${request.departureTime}
+            </div>
+
+            <div class="detail-item">
+                <strong>Expected Return</strong>
+                ${request.returnTime || "-"}
+            </div>
+
+            <div class="detail-item">
+                <strong>Purpose</strong>
+                ${request.purpose}
+            </div>
+
+            <div class="detail-item">
+                <strong>Passengers</strong>
+                ${request.passengers}
+            </div>
+
+            <div class="detail-item">
+                <strong>Destination</strong>
+                ${request.destination}
+            </div>
+
+            <div class="detail-item">
+                <strong>Vehicle Type</strong>
+                ${request.vehicleType}
+            </div>
+
+            <div class="detail-item">
+                <strong>Allocated Vehicle</strong>
+                ${request.vehicle || "Not allocated"}
+            </div>
+
+            <div class="detail-item">
+                <strong>Assigned Driver</strong>
+                ${request.driver || "Not assigned"}
+            </div>
+
+            <div class="detail-item">
+                <strong>Justification</strong>
+                ${request.justification || "-"}
+            </div>
+
+        </div>
+
+
+        <div class="approval-box">
+
+            <h3>Workflow Actions</h3>
+
+            ${workflowButtons(request)}
+
+        </div>
+
+    `;
+
+
+    document.getElementById("detailsModal").style.display = "flex";
+
+}
+
+
+/* =========================================================
+   WORKFLOW BUTTONS
+========================================================= */
+
+function workflowButtons(request) {
+
+    if (request.status === "Pending Approval") {
+
+        return `
+
+            <button
+                class="btn btn-success"
+                onclick="approveRequest('${request.id}')">
+                Approve Request
+            </button>
+
+            <button
+                class="btn btn-danger"
+                onclick="rejectRequest('${request.id}')">
+                Reject Request
+            </button>
+
+        `;
+
+    }
+
+
+    if (request.status === "Approved") {
+
+        return `
+
+            <button
+                class="btn btn-primary"
+                onclick="allocateVehicle('${request.id}')">
+                Allocate Vehicle
+            </button>
+
+        `;
+
+    }
+
+
+    if (request.status === "Allocated") {
+
+        return `
+
+            <button
+                class="btn btn-info"
+                onclick="startTrip('${request.id}')">
+                Start Trip
+            </button>
+
+        `;
+
+    }
+
+
+    if (request.status === "Trip in Progress") {
+
+        return `
+
+            <button
+                class="btn btn-success"
+                onclick="completeTrip('${request.id}')">
+                Complete Trip
+            </button>
+
+        `;
+
+    }
+
+
+    return `
+        <p style="color:#777;">
+            No further workflow action required.
+        </p>
+    `;
+
+}
+
+
+/* =========================================================
+   APPROVE REQUEST
+========================================================= */
+
+function approveRequest(id) {
+
+    const request =
+        requests.find(r => r.id === id);
+
+    if (!request) return;
+
+
+    request.status = "Approved";
+
+    displayRequests();
+
+    viewRequest(id);
+
+    alert(
+        "Request " +
+        id +
+        " has been approved."
+    );
+
+}
+
+
+/* =========================================================
+   REJECT REQUEST
+========================================================= */
+
+function rejectRequest(id) {
+
+    const request =
+        requests.find(r => r.id === id);
+
+    if (!request) return;
+
+
+    const reason =
+        prompt("Enter reason for rejection:");
+
+    if (reason === null) return;
+
+
+    request.status = "Rejected";
+
+    request.rejectionReason = reason;
+
+    displayRequests();
+
+    viewRequest(id);
+
+    alert(
+        "Request " +
+        id +
+        " has been rejected."
+    );
+
+}
+
+
+/* =========================================================
+   ALLOCATE VEHICLE
+========================================================= */
+
+function allocateVehicle(id) {
+
+    const request =
+        requests.find(r => r.id === id);
+
+    if (!request) return;
+
+
+    const vehicle =
+        prompt(
+            "Enter vehicle registration number to allocate:"
+        );
+
+    if (!vehicle) return;
+
+
+    const driver =
+        prompt(
+            "Enter assigned driver:"
+        );
+
+    if (!driver) return;
+
+
+    request.vehicle = vehicle;
+
+    request.driver = driver;
+
+    request.status = "Allocated";
+
+    displayRequests();
+
+    viewRequest(id);
+
+    alert(
+        "Vehicle " +
+        vehicle +
+        " and driver " +
+        driver +
+        " have been allocated."
+    );
+
+}
+
+
+/* =========================================================
+   START TRIP
+========================================================= */
+
+function startTrip(id) {
+
+    const request =
+        requests.find(r => r.id === id);
+
+    if (!request) return;
+
+
+    request.status = "Trip in Progress";
+
+    displayRequests();
+
+    viewRequest(id);
+
+    alert(
+        "Trip for " +
+        id +
+        " has started."
+    );
+
+}
+
+
+/* =========================================================
+   COMPLETE TRIP
+========================================================= */
+
+function completeTrip(id) {
+
+    const request =
+        requests.find(r => r.id === id);
+
+    if (!request) return;
+
+
+    request.status = "Completed";
+
+    displayRequests();
+
+    viewRequest(id);
+
+    alert(
+        "Trip " +
+        id +
+        " has been completed successfully."
+    );
+
+}
+
+
+/* =========================================================
+   FILTER REQUESTS
+========================================================= */
+
+function filterRequests() {
+
+    const search =
+        document.getElementById("searchInput")
+        .value
+        .toLowerCase();
+
+    const status =
+        document.getElementById("statusFilter").value;
+
+    const purpose =
+        document.getElementById("purposeFilter").value;
+
+
+    const filtered =
+        requests.filter(request => {
+
+            const matchesSearch =
+                request.id.toLowerCase().includes(search) ||
+                request.requester.toLowerCase().includes(search) ||
+                request.department.toLowerCase().includes(search) ||
+                request.destination.toLowerCase().includes(search);
+
+            const matchesStatus =
+                !status ||
+                request.status === status;
+
+            const matchesPurpose =
+                !purpose ||
+                request.purpose === purpose;
+
+            return (
+                matchesSearch &&
+                matchesStatus &&
+                matchesPurpose
+            );
+
+        });
+
+
+    displayRequests(filtered);
+
+}
+
+
+/* =========================================================
+   RESET FILTERS
+========================================================= */
+
+function resetFilters() {
+
+    document.getElementById("searchInput").value = "";
+
+    document.getElementById("statusFilter").value = "";
+
+    document.getElementById("purposeFilter").value = "";
+
+    displayRequests();
+
+}
+
+
+/* =========================================================
+   CLOSE DETAILS
+========================================================= */
+
+function closeDetails() {
+
+    document.getElementById("detailsModal").style.display = "none";
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function navigate(page) {
+
+    window.location.href = page;
+
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+function logout() {
+
+    if (
+        confirm("Are you sure you want to logout?")
+    ) {
+
+        window.location.href = "login.html";
+
+    }
+
+}
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+displayRequests();
+
+</script>
+
+</body>
+</html>

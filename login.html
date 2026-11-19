@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FleetMS | Login</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background-image:
+                linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)),
+                url("prado.jpg");
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container {
+            width: 400px;
+            max-width: 92%;
+            background: rgba(255, 255, 255, 0.97);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.35);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .logo h1 {
+            font-size: 30px;
+            color: #111;
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            color: #c9a227;
+        }
+
+        .logo p {
+            margin-top: 6px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: #c9a227;
+            box-shadow: 0 0 5px rgba(201, 162, 39, 0.3);
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .password-container input {
+            padding-right: 70px;
+        }
+
+        .show-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            color: #555;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .remember {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+            font-size: 13px;
+        }
+
+        .remember label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #555;
+        }
+
+        .remember a {
+            color: #8a6d00;
+            text-decoration: none;
+        }
+
+        .remember a:hover {
+            text-decoration: underline;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 6px;
+            background: #111;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .login-btn:hover {
+            background: #c9a227;
+            color: #111;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+            color: #999;
+            font-size: 12px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #ddd;
+        }
+
+        .divider span {
+            padding: 0 10px;
+        }
+
+        .security {
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+            line-height: 1.6;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 11px;
+            color: #999;
+        }
+
+        @media (max-width: 500px) {
+            .login-container {
+                padding: 30px 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <div class="logo">
+            <h1>Fleet<span>MS</span></h1>
+            <p>Fleet Management System</p>
+        </div>
+
+        <form id="loginForm">
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Enter your email"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+
+                <div class="password-container">
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Enter your password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="show-password"
+                        onclick="togglePassword()">
+                        SHOW
+                    </button>
+                </div>
+            </div>
+
+            <div class="remember">
+
+                <label>
+                    <input type="checkbox" id="remember">
+                    Remember me
+                </label>
+
+                <a href="#">Forgot Password?</a>
+
+            </div>
+
+            <button type="submit" class="login-btn">
+                LOGIN
+            </button>
+
+        </form>
+
+        <div class="divider">
+            <span>SECURE ACCESS</span>
+        </div>
+
+        <div class="security">
+            🔒 Authorized personnel only.<br>
+            All system activities may be logged and monitored.
+        </div>
+
+        <div class="footer">
+            © 2026 Fleet Management System
+        </div>
+
+    </div>
+
+
+    <script>
+
+        // Show / Hide Password
+        function togglePassword() {
+
+            const password = document.getElementById("password");
+            const button = document.querySelector(".show-password");
+
+            if (password.type === "password") {
+
+                password.type = "text";
+                button.textContent = "HIDE";
+
+            } else {
+
+                password.type = "password";
+                button.textContent = "SHOW";
+            }
+        }
+
+
+        // Temporary login handler
+        document.getElementById("loginForm").addEventListener("submit", function(event) {
+
+            event.preventDefault();
+
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            if (email === "" || password === "") {
+
+                alert("Please enter your email and password.");
+                return;
+            }
+
+            /*
+                This is currently a frontend demonstration.
+
+                Later we will replace this section with:
+
+                POST /api/login/
+
+                The Django backend will:
+                1. Verify the username/email
+                2. Verify the password
+                3. Authenticate the user
+                4. Create a secure session/token
+                5. Return the user's role
+                6. Redirect to the appropriate dashboard
+            */
+
+            alert("Login interface is working. Backend authentication will be connected next.");
+
+        });
+
+    </script>
+
+</body>
+</html>

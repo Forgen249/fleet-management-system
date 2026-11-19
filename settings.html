@@ -1,0 +1,3059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FleetMS | System Settings & Audit Trail</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f4f5f7;
+            color: #222;
+        }
+
+        /* =====================================================
+           NAVBAR
+        ===================================================== */
+
+        .navbar {
+            height: 65px;
+            background: #171717;
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 25px;
+
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+
+            z-index: 1000;
+
+            border-bottom: 1px solid #333;
+        }
+
+        .logo {
+            font-size: 23px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            color: #d4af37;
+        }
+
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+
+            font-size: 14px;
+        }
+
+        .user-icon {
+            width: 35px;
+            height: 35px;
+
+            border-radius: 50%;
+
+            background: #d4af37;
+            color: #111;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-weight: bold;
+        }
+
+
+        /* =====================================================
+           SIDEBAR
+        ===================================================== */
+
+        .sidebar {
+            position: fixed;
+
+            top: 65px;
+            left: 0;
+
+            width: 240px;
+            height: calc(100vh - 65px);
+
+            background: #202020;
+
+            padding-top: 20px;
+
+            overflow-y: auto;
+        }
+
+        .sidebar a {
+            display: block;
+
+            color: #ccc;
+
+            text-decoration: none;
+
+            padding: 14px 22px;
+
+            font-size: 14px;
+
+            border-left: 4px solid transparent;
+
+            transition: 0.2s;
+        }
+
+        .sidebar a:hover {
+            background: #2d2d2d;
+            color: white;
+        }
+
+        .sidebar a.active {
+            background: #2d2d2d;
+
+            color: #d4af37;
+
+            border-left: 4px solid #d4af37;
+        }
+
+        .sidebar-section {
+            padding: 18px 22px 8px;
+
+            color: #777;
+
+            font-size: 11px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1px;
+        }
+
+
+        /* =====================================================
+           MAIN
+        ===================================================== */
+
+        .main {
+            margin-left: 240px;
+
+            padding: 90px 30px 40px;
+        }
+
+        .page-header {
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+
+            margin-bottom: 7px;
+        }
+
+        .page-header p {
+            color: #777;
+
+            font-size: 14px;
+        }
+
+
+        /* =====================================================
+           SUMMARY CARDS
+        ===================================================== */
+
+        .summary-grid {
+            display: grid;
+
+            grid-template-columns: repeat(4, 1fr);
+
+            gap: 18px;
+
+            margin-bottom: 25px;
+        }
+
+        .summary-card {
+            background: white;
+
+            padding: 20px;
+
+            border-radius: 8px;
+
+            border: 1px solid #e4e4e4;
+
+            box-shadow: 0 2px 7px rgba(0,0,0,0.04);
+        }
+
+        .summary-card h4 {
+            color: #777;
+
+            font-size: 13px;
+
+            margin-bottom: 10px;
+        }
+
+        .summary-card .number {
+            font-size: 25px;
+
+            font-weight: bold;
+        }
+
+        .gold {
+            color: #b18a13;
+        }
+
+
+        /* =====================================================
+           PANELS
+        ===================================================== */
+
+        .panel {
+            background: white;
+
+            border-radius: 8px;
+
+            border: 1px solid #e3e3e3;
+
+            margin-bottom: 25px;
+
+            box-shadow: 0 2px 7px rgba(0,0,0,0.04);
+        }
+
+        .panel-header {
+            padding: 18px 20px;
+
+            border-bottom: 1px solid #eee;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 15px;
+        }
+
+        .panel-header h2 {
+            font-size: 18px;
+        }
+
+        .panel-body {
+            padding: 20px;
+        }
+
+
+        /* =====================================================
+           TABS
+        ===================================================== */
+
+        .settings-tabs {
+            display: flex;
+
+            gap: 5px;
+
+            border-bottom: 1px solid #ddd;
+
+            margin-bottom: 20px;
+
+            overflow-x: auto;
+        }
+
+        .tab-button {
+            border: none;
+
+            background: transparent;
+
+            padding: 12px 16px;
+
+            cursor: pointer;
+
+            font-size: 12px;
+
+            font-weight: bold;
+
+            color: #666;
+
+            border-bottom: 3px solid transparent;
+
+            white-space: nowrap;
+        }
+
+        .tab-button:hover {
+            color: #222;
+        }
+
+        .tab-button.active {
+            color: #9a7710;
+
+            border-bottom-color: #d4af37;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+
+        /* =====================================================
+           FORM
+        ===================================================== */
+
+        .form-grid {
+            display: grid;
+
+            grid-template-columns: repeat(2, 1fr);
+
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 12px;
+
+            font-weight: bold;
+
+            color: #555;
+
+            margin-bottom: 7px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 10px;
+
+            border: 1px solid #ccc;
+
+            border-radius: 5px;
+
+            outline: none;
+
+            background: white;
+
+            font-size: 13px;
+        }
+
+        .form-group textarea {
+            min-height: 90px;
+
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #d4af37;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+
+        /* =====================================================
+           BUTTONS
+        ===================================================== */
+
+        .btn {
+            border: none;
+
+            padding: 10px 16px;
+
+            border-radius: 5px;
+
+            cursor: pointer;
+
+            font-size: 12px;
+
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background: #171717;
+
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #333;
+        }
+
+        .btn-gold {
+            background: #d4af37;
+
+            color: #111;
+        }
+
+        .btn-gold:hover {
+            background: #c39d24;
+        }
+
+        .btn-secondary {
+            background: #e8e8e8;
+
+            color: #333;
+        }
+
+        .btn-success {
+            background: #287a3e;
+
+            color: white;
+        }
+
+        .btn-danger {
+            background: #c0392b;
+
+            color: white;
+        }
+
+        .btn-small {
+            padding: 7px 10px;
+
+            font-size: 10px;
+        }
+
+
+        /* =====================================================
+           TOGGLE
+        ===================================================== */
+
+        .setting-row {
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            padding: 15px 0;
+
+            border-bottom: 1px solid #eee;
+        }
+
+        .setting-row:last-child {
+            border-bottom: none;
+        }
+
+        .setting-info h4 {
+            font-size: 13px;
+
+            margin-bottom: 4px;
+        }
+
+        .setting-info p {
+            font-size: 11px;
+
+            color: #777;
+
+            line-height: 1.5;
+        }
+
+        .switch {
+            position: relative;
+
+            width: 45px;
+
+            height: 23px;
+
+            flex-shrink: 0;
+        }
+
+        .switch input {
+            display: none;
+        }
+
+        .slider {
+            position: absolute;
+
+            inset: 0;
+
+            background: #ccc;
+
+            border-radius: 25px;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .slider:before {
+            content: "";
+
+            position: absolute;
+
+            width: 17px;
+            height: 17px;
+
+            left: 3px;
+            top: 3px;
+
+            background: white;
+
+            border-radius: 50%;
+
+            transition: 0.2s;
+        }
+
+        .switch input:checked + .slider {
+            background: #d4af37;
+        }
+
+        .switch input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+
+
+        /* =====================================================
+           SECURITY CARDS
+        ===================================================== */
+
+        .security-grid {
+            display: grid;
+
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 15px;
+
+            margin-bottom: 20px;
+        }
+
+        .security-card {
+            border: 1px solid #ddd;
+
+            border-radius: 7px;
+
+            padding: 18px;
+        }
+
+        .security-card h3 {
+            font-size: 14px;
+
+            margin-bottom: 7px;
+        }
+
+        .security-card p {
+            font-size: 11px;
+
+            color: #777;
+
+            line-height: 1.5;
+        }
+
+        .security-status {
+            margin-top: 12px;
+
+            font-size: 11px;
+
+            font-weight: bold;
+
+            color: #287a3e;
+        }
+
+
+        /* =====================================================
+           AUDIT FILTERS
+        ===================================================== */
+
+        .filter-grid {
+            display: grid;
+
+            grid-template-columns: 2fr 1fr 1fr 1fr auto;
+
+            gap: 12px;
+
+            align-items: end;
+
+            margin-bottom: 20px;
+        }
+
+
+        /* =====================================================
+           TABLE
+        ===================================================== */
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+
+            border-collapse: collapse;
+
+            min-width: 1000px;
+        }
+
+        th,
+        td {
+            padding: 12px;
+
+            border-bottom: 1px solid #eee;
+
+            text-align: left;
+
+            font-size: 11px;
+        }
+
+        th {
+            background: #f7f7f7;
+
+            color: #555;
+
+            font-size: 10px;
+
+            text-transform: uppercase;
+        }
+
+        tr:hover td {
+            background: #fafafa;
+        }
+
+
+        /* =====================================================
+           STATUS
+        ===================================================== */
+
+        .status {
+            display: inline-block;
+
+            padding: 5px 9px;
+
+            border-radius: 20px;
+
+            font-size: 9px;
+
+            font-weight: bold;
+        }
+
+        .status.success {
+            background: #e5f5e8;
+
+            color: #267a34;
+        }
+
+        .status.failed {
+            background: #fbe7e5;
+
+            color: #a93226;
+        }
+
+        .status.warning {
+            background: #fff4d7;
+
+            color: #8c6b00;
+        }
+
+
+        /* =====================================================
+           BACKUP
+        ===================================================== */
+
+        .backup-grid {
+            display: grid;
+
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 18px;
+        }
+
+        .backup-card {
+            border: 1px solid #ddd;
+
+            border-radius: 7px;
+
+            padding: 20px;
+        }
+
+        .backup-card h3 {
+            font-size: 14px;
+
+            margin-bottom: 10px;
+        }
+
+        .backup-card p {
+            color: #777;
+
+            font-size: 11px;
+
+            line-height: 1.6;
+        }
+
+        .backup-value {
+            font-size: 21px;
+
+            font-weight: bold;
+
+            margin: 10px 0;
+        }
+
+
+        /* =====================================================
+           MODAL
+        ===================================================== */
+
+        .modal {
+            display: none;
+
+            position: fixed;
+
+            inset: 0;
+
+            background: rgba(0,0,0,0.65);
+
+            z-index: 2000;
+
+            padding: 30px;
+
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: white;
+
+            max-width: 700px;
+
+            margin: auto;
+
+            border-radius: 8px;
+
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background: #171717;
+
+            color: white;
+
+            padding: 16px 20px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 17px;
+        }
+
+        .close {
+            font-size: 25px;
+
+            cursor: pointer;
+
+            color: #ccc;
+        }
+
+        .close:hover {
+            color: white;
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        .modal-footer {
+            padding: 15px 20px;
+
+            background: #f7f7f7;
+
+            border-top: 1px solid #ddd;
+
+            display: flex;
+
+            justify-content: flex-end;
+
+            gap: 10px;
+        }
+
+
+        /* =====================================================
+           AUDIT DETAILS
+        ===================================================== */
+
+        .audit-details {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 15px;
+        }
+
+        .detail-box {
+            background: #f7f7f7;
+
+            padding: 13px;
+
+            border-radius: 5px;
+        }
+
+        .detail-box strong {
+            display: block;
+
+            color: #777;
+
+            font-size: 9px;
+
+            text-transform: uppercase;
+
+            margin-bottom: 5px;
+        }
+
+        .detail-box span {
+            font-size: 12px;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 1100px) {
+
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .security-grid,
+            .backup-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .filter-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 700px) {
+
+            .sidebar {
+                width: 65px;
+            }
+
+            .sidebar a {
+                font-size: 0;
+
+                text-align: center;
+
+                padding: 15px 5px;
+            }
+
+            .sidebar-section {
+                display: none;
+            }
+
+            .main {
+                margin-left: 65px;
+
+                padding: 85px 15px 30px;
+            }
+
+            .summary-grid,
+            .form-grid,
+            .security-grid,
+            .backup-grid,
+            .filter-grid,
+            .audit-details {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: auto;
+            }
+
+            .user-area span {
+                display: none;
+            }
+
+            .navbar {
+                padding: 0 15px;
+            }
+
+            .modal {
+                padding: 10px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
+<div class="navbar">
+
+    <div class="logo">
+        Fleet<span>MS</span>
+    </div>
+
+    <div class="user-area">
+
+        <span>
+            System Administrator
+        </span>
+
+        <div class="user-icon">
+            SA
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
+
+<div class="sidebar">
+
+    <div class="sidebar-section">
+        Main
+    </div>
+
+    <a href="dashboard.html">
+        ▣ Dashboard
+    </a>
+
+    <a href="vehicles.html">
+        🚙 Vehicles
+    </a>
+
+    <a href="drivers.html">
+        👤 Drivers
+    </a>
+
+
+    <div class="sidebar-section">
+        Fleet Operations
+    </div>
+
+    <a href="maintenance.html">
+        🔧 Maintenance
+    </a>
+
+    <a href="fuel.html">
+        ⛽ Fuel Management
+    </a>
+
+    <a href="vehicle_requests.html">
+        📋 Vehicle Requests
+    </a>
+
+
+    <div class="sidebar-section">
+        Analysis
+    </div>
+
+    <a href="analytics.html">
+        📊 Fleet Analytics
+    </a>
+
+    <a href="search.html">
+        🔎 Search & Filters
+    </a>
+
+    <a href="reports.html">
+        📄 Reports & Documents
+    </a>
+
+
+    <div class="sidebar-section">
+        Administration
+    </div>
+
+    <a href="users.html">
+        👥 Users & Roles
+    </a>
+
+    <a href="settings.html"
+       class="active">
+
+        ⚙ Settings
+
+    </a>
+
+    <a href="#"
+       onclick="logout()">
+
+        🚪 Logout
+
+    </a>
+
+</div>
+
+
+<!-- =====================================================
+     MAIN CONTENT
+===================================================== -->
+
+<div class="main">
+
+
+    <div class="page-header">
+
+        <h1>
+            System Settings & Audit Trail
+        </h1>
+
+        <p>
+            Configure FleetMS system preferences, security,
+            notifications, backups and monitor system activity.
+        </p>
+
+    </div>
+
+
+    <!-- =================================================
+         SUMMARY
+    ================================================= -->
+
+    <div class="summary-grid">
+
+        <div class="summary-card">
+
+            <h4>
+                System Status
+            </h4>
+
+            <div class="number gold">
+                Operational
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <h4>
+                Audit Events
+            </h4>
+
+            <div class="number">
+                12,486
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <h4>
+                Last Backup
+            </h4>
+
+            <div class="number">
+                Today
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <h4>
+                Security Alerts
+            </h4>
+
+            <div class="number">
+                3
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         SETTINGS PANEL
+    ================================================= -->
+
+    <div class="panel">
+
+        <div class="panel-body">
+
+
+            <div class="settings-tabs">
+
+                <button
+                    class="tab-button active"
+                    onclick="openTab(event,'general')">
+
+                    ⚙ General
+
+                </button>
+
+
+                <button
+                    class="tab-button"
+                    onclick="openTab(event,'security')">
+
+                    🔐 Security
+
+                </button>
+
+
+                <button
+                    class="tab-button"
+                    onclick="openTab(event,'notifications')">
+
+                    🔔 Notifications
+
+                </button>
+
+
+                <button
+                    class="tab-button"
+                    onclick="openTab(event,'backup')">
+
+                    💾 Backup & Data
+
+                </button>
+
+            </div>
+
+
+            <!-- =========================================
+                 GENERAL SETTINGS
+            ========================================== -->
+
+            <div id="general"
+                 class="tab-content active">
+
+
+                <h3 style="margin-bottom:18px;">
+                    General System Configuration
+                </h3>
+
+
+                <div class="form-grid">
+
+
+                    <div class="form-group">
+
+                        <label>
+                            System Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="systemName"
+                            value="Fleet Management System">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Short Name
+                        </label>
+
+                        <input
+                            type="text"
+                            value="FleetMS">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Institution / Department
+                        </label>
+
+                        <input
+                            type="text"
+                            value="State Department for Immigration and Citizen Services">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Default Currency
+                        </label>
+
+                        <select>
+
+                            <option selected>
+                                KES - Kenyan Shilling
+                            </option>
+
+                            <option>
+                                USD - US Dollar
+                            </option>
+
+                            <option>
+                                EUR - Euro
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Date Format
+                        </label>
+
+                        <select>
+
+                            <option selected>
+                                DD/MM/YYYY
+                            </option>
+
+                            <option>
+                                MM/DD/YYYY
+                            </option>
+
+                            <option>
+                                YYYY-MM-DD
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Time Zone
+                        </label>
+
+                        <select>
+
+                            <option selected>
+                                Africa/Nairobi (EAT)
+                            </option>
+
+                            <option>
+                                UTC
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Official Contact Email
+                        </label>
+
+                        <input
+                            type="email"
+                            value="fleet@government.go.ke">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Contact Phone
+                        </label>
+
+                        <input
+                            type="text"
+                            value="+254 000 000 000">
+
+                    </div>
+
+
+                    <div class="form-group full-width">
+
+                        <label>
+                            System Description
+                        </label>
+
+                        <textarea>FleetMS is a fleet management information system for managing government vehicles, drivers, fuel, maintenance, requests, trips, reports and fleet operations.</textarea>
+
+                    </div>
+
+                </div>
+
+
+                <div style="
+                    margin-top:20px;
+                    display:flex;
+                    justify-content:flex-end;
+                ">
+
+                    <button
+                        class="btn btn-gold"
+                        onclick="saveGeneralSettings()">
+
+                        Save General Settings
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================================
+                 SECURITY SETTINGS
+            ========================================== -->
+
+            <div id="security"
+                 class="tab-content">
+
+
+                <h3 style="margin-bottom:18px;">
+                    Security & Access Control
+                </h3>
+
+
+                <div class="security-grid">
+
+
+                    <div class="security-card">
+
+                        <h3>
+                            Authentication
+                        </h3>
+
+                        <p>
+                            Secure user authentication and account
+                            management controls.
+                        </p>
+
+                        <div class="security-status">
+                            ✓ Enabled
+                        </div>
+
+                    </div>
+
+
+                    <div class="security-card">
+
+                        <h3>
+                            Password Policy
+                        </h3>
+
+                        <p>
+                            Strong password requirements are applied
+                            to system accounts.
+                        </p>
+
+                        <div class="security-status">
+                            ✓ Enforced
+                        </div>
+
+                    </div>
+
+
+                    <div class="security-card">
+
+                        <h3>
+                            Audit Logging
+                        </h3>
+
+                        <p>
+                            User activities and security events
+                            are recorded.
+                        </p>
+
+                        <div class="security-status">
+                            ✓ Active
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="setting-row">
+
+                    <div class="setting-info">
+
+                        <h4>
+                            Two-Factor Authentication
+                        </h4>
+
+                        <p>
+                            Require an additional authentication
+                            factor for privileged accounts.
+                        </p>
+
+                    </div>
+
+                    <label class="switch">
+
+                        <input
+                            type="checkbox"
+                            checked>
+
+                        <span class="slider"></span>
+
+                    </label>
+
+                </div>
+
+
+                <div class="setting-row">
+
+                    <div class="setting-info">
+
+                        <h4>
+                            Account Lockout
+                        </h4>
+
+                        <p>
+                            Automatically lock accounts after repeated
+                            unsuccessful login attempts.
+                        </p>
+
+                    </div>
+
+                    <label class="switch">
+
+                        <input
+                            type="checkbox"
+                            checked>
+
+                        <span class="slider"></span>
+
+                    </label>
+
+                </div>
+
+
+                <div class="setting-row">
+
+                    <div class="setting-info">
+
+                        <h4>
+                            Audit Trail
+                        </h4>
+
+                        <p>
+                            Record changes to vehicles, fuel,
+                            maintenance, users, requests and settings.
+                        </p>
+
+                    </div>
+
+                    <label class="switch">
+
+                        <input
+                            type="checkbox"
+                            checked>
+
+                        <span class="slider"></span>
+
+                    </label>
+
+                </div>
+
+
+                <div class="setting-row">
+
+                    <div class="setting-info">
+
+                        <h4>
+                            Automatic Session Timeout
+                        </h4>
+
+                        <p>
+                            Automatically sign users out after
+                            a period of inactivity.
+                        </p>
+
+                    </div>
+
+                    <select
+                        style="
+                            padding:8px;
+                            border:1px solid #ccc;
+                            border-radius:5px;
+                        ">
+
+                        <option>
+                            15 Minutes
+                        </option>
+
+                        <option selected>
+                            30 Minutes
+                        </option>
+
+                        <option>
+                            60 Minutes
+                        </option>
+
+                        <option>
+                            120 Minutes
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="setting-row">
+
+                    <div class="setting-info">
+
+                        <h4>
+                            Maximum Login Attempts
+                        </h4>
+
+                        <p>
+                            Number of unsuccessful attempts allowed
+                            before account lockout.
+                        </p>
+
+                    </div>
+
+                    <input
+                        type="number"
+                        value="5"
+                        min="1"
+                        max="10"
+                        style="
+                            width:90px;
+                            padding:8px;
+                            border:1px solid #ccc;
+                            border-radius:5px;
+                        ">
+
+                </div>
+
+
+                <div style="
+                    margin-top:20px;
+                    display:flex;
+                    justify-content:flex-end;
+                ">
+
+                    <button
+                        class="btn btn-gold"
+                        onclick="saveSecuritySettings()">
+
+                        Save Security Settings
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================================
+                 NOTIFICATIONS
+            ========================================== -->
+
+            <div id="notifications"
+                 class="tab-content">
+
+
+                <h3 style="margin-bottom:18px;">
+                    Notification Settings
+                </h3>
+
+
+                <div class="setting-row">
+
+                    <div class="setting-info">
+
+                        <h4>
+                            Maintenance Alerts
+                        </h4>
+
+                        <p>
+                            Notify fleet managers when vehicles
+                            require maintenance.
+                        </p>
+
+                    </div>
+
+                    <label class="switch">
+
+                        <input
+                            type="checkbox"
+                            checked>
+
+                        <span class="slider"></span>
+
+                    </label>
+
+                </div>
+
+
+                <div class="setting-row">
+
+                    <div class="setting-info">
+
+                        <h4>
+                            Insurance Expiry Alerts
+                        </h4>
+
+                        <p>
+                            Notify responsible officers before
+                            vehicle insurance expires.
+                        </p>
+
+                    </div>
+
+                    <label class="switch">
+
+                        <input
+                            type="checkbox"
+                            checked>
+
+                        <span class="slider"></span>
+
+                    </label>
+
+                </div>
+
+
+                <div class="setting-row">
+
+                    <div class="setting-info">
+
+                        <h4>
+                            Fuel Consumption Alerts
+                        </h4>
+
+                        <p>
+                            Alert fleet managers where unusual fuel
+                            consumption is detected.
+                        </p>
+
+                    </div>
+
+                    <label class="switch">
+
+                        <input
+                            type="checkbox"
+                            checked>
+
+                        <span class="slider"></span>
+
+                    </label>
+
+                </div>
+
+
+                <div class="setting-row">
+
+                    <div class="setting-info">
+
+                        <h4>
+                            Vehicle Request Notifications
+                        </h4>
+
+                        <p>
+                            Notify approvers when new vehicle
+                            requests are submitted.
+                        </p>
+
+                    </div>
+
+                    <label class="switch">
+
+                        <input
+                            type="checkbox"
+                            checked>
+
+                        <span class="slider"></span>
+
+                    </label>
+
+                </div>
+
+
+                <div class="setting-row">
+
+                    <div class="setting-info">
+
+                        <h4>
+                            Security Notifications
+                        </h4>
+
+                        <p>
+                            Notify administrators of account
+                            lockouts and suspicious activities.
+                        </p>
+
+                    </div>
+
+                    <label class="switch">
+
+                        <input
+                            type="checkbox"
+                            checked>
+
+                        <span class="slider"></span>
+
+                    </label>
+
+                </div>
+
+
+                <div class="setting-row">
+
+                    <div class="setting-info">
+
+                        <h4>
+                            Email Notifications
+                        </h4>
+
+                        <p>
+                            Send system notifications through
+                            configured email services.
+                        </p>
+
+                    </div>
+
+                    <label class="switch">
+
+                        <input
+                            type="checkbox"
+                            checked>
+
+                        <span class="slider"></span>
+
+                    </label>
+
+                </div>
+
+
+                <div style="
+                    margin-top:20px;
+                    display:flex;
+                    justify-content:flex-end;
+                ">
+
+                    <button
+                        class="btn btn-gold"
+                        onclick="saveNotificationSettings()">
+
+                        Save Notification Settings
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================================
+                 BACKUP
+            ========================================== -->
+
+            <div id="backup"
+                 class="tab-content">
+
+
+                <h3 style="margin-bottom:18px;">
+                    Backup & Data Management
+                </h3>
+
+
+                <div class="backup-grid">
+
+
+                    <div class="backup-card">
+
+                        <h3>
+                            Database Backup
+                        </h3>
+
+                        <div class="backup-value">
+                            Successful
+                        </div>
+
+                        <p>
+                            Last backup:
+                            26 Sep 2026, 02:00 AM
+                        </p>
+
+                        <br>
+
+                        <button
+                            class="btn btn-gold"
+                            onclick="createBackup()">
+
+                            Backup Now
+
+                        </button>
+
+                    </div>
+
+
+                    <div class="backup-card">
+
+                        <h3>
+                            Database Size
+                        </h3>
+
+                        <div class="backup-value">
+                            2.8 GB
+                        </div>
+
+                        <p>
+                            Current FleetMS database storage
+                            utilisation.
+                        </p>
+
+                    </div>
+
+
+                    <div class="backup-card">
+
+                        <h3>
+                            Backup Frequency
+                        </h3>
+
+                        <div class="backup-value">
+                            Daily
+                        </div>
+
+                        <p>
+                            Automated database backups are
+                            configured to run daily.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <br>
+
+
+                <div class="form-grid">
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Backup Frequency
+                        </label>
+
+                        <select>
+
+                            <option selected>
+                                Daily
+                            </option>
+
+                            <option>
+                                Weekly
+                            </option>
+
+                            <option>
+                                Monthly
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Data Retention Period
+                        </label>
+
+                        <select>
+
+                            <option>
+                                1 Year
+                            </option>
+
+                            <option selected>
+                                3 Years
+                            </option>
+
+                            <option>
+                                5 Years
+                            </option>
+
+                            <option>
+                                7 Years
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Backup Location
+                        </label>
+
+                        <select>
+
+                            <option selected>
+                                Secure Server Storage
+                            </option>
+
+                            <option>
+                                Government Cloud Storage
+                            </option>
+
+                            <option>
+                                Secondary Data Centre
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Automatic Backup
+                        </label>
+
+                        <select>
+
+                            <option selected>
+                                Enabled
+                            </option>
+
+                            <option>
+                                Disabled
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <div style="
+                    margin-top:20px;
+                    display:flex;
+                    justify-content:flex-end;
+                ">
+
+                    <button
+                        class="btn btn-gold"
+                        onclick="saveBackupSettings()">
+
+                        Save Backup Settings
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         AUDIT TRAIL
+    ================================================= -->
+
+    <div class="panel">
+
+        <div class="panel-header">
+
+            <h2>
+                System Audit Trail
+            </h2>
+
+            <button
+                class="btn btn-secondary"
+                onclick="exportAuditLog()">
+
+                Export Audit Log
+
+            </button>
+
+        </div>
+
+
+        <div class="panel-body">
+
+
+            <!-- FILTERS -->
+
+            <div class="filter-grid">
+
+
+                <div class="form-group">
+
+                    <label>
+                        Search
+                    </label>
+
+                    <input
+                        type="text"
+                        id="auditSearch"
+                        placeholder="Search user, action, module..."
+                        oninput="filterAudit()">
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Module
+                    </label>
+
+                    <select
+                        id="auditModule"
+                        onchange="filterAudit()">
+
+                        <option value="All">
+                            All Modules
+                        </option>
+
+                        <option>
+                            Authentication
+                        </option>
+
+                        <option>
+                            Vehicles
+                        </option>
+
+                        <option>
+                            Fuel
+                        </option>
+
+                        <option>
+                            Maintenance
+                        </option>
+
+                        <option>
+                            Vehicle Requests
+                        </option>
+
+                        <option>
+                            Users
+                        </option>
+
+                        <option>
+                            Reports
+                        </option>
+
+                        <option>
+                            Settings
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Action
+                    </label>
+
+                    <select
+                        id="auditAction"
+                        onchange="filterAudit()">
+
+                        <option value="All">
+                            All Actions
+                        </option>
+
+                        <option>
+                            Login
+                        </option>
+
+                        <option>
+                            Create
+                        </option>
+
+                        <option>
+                            Update
+                        </option>
+
+                        <option>
+                            Delete
+                        </option>
+
+                        <option>
+                            Export
+                        </option>
+
+                        <option>
+                            Approve
+                        </option>
+
+                        <option>
+                            Logout
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Status
+                    </label>
+
+                    <select
+                        id="auditStatus"
+                        onchange="filterAudit()">
+
+                        <option value="All">
+                            All
+                        </option>
+
+                        <option>
+                            Success
+                        </option>
+
+                        <option>
+                            Failed
+                        </option>
+
+                        <option>
+                            Warning
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <button
+                    class="btn btn-secondary"
+                    onclick="clearAuditFilters()">
+
+                    Clear
+
+                </button>
+
+            </div>
+
+
+            <!-- AUDIT TABLE -->
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Date & Time
+                            </th>
+
+                            <th>
+                                User
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                            <th>
+                                Module
+                            </th>
+
+                            <th>
+                                Record
+                            </th>
+
+                            <th>
+                                IP Address
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="auditTable">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     AUDIT DETAILS MODAL
+===================================================== -->
+
+<div class="modal"
+     id="auditModal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2>
+                Audit Event Details
+            </h2>
+
+            <span
+                class="close"
+                onclick="closeAuditModal()">
+
+                &times;
+
+            </span>
+
+        </div>
+
+
+        <div class="modal-body"
+             id="auditDetails">
+
+        </div>
+
+
+        <div class="modal-footer">
+
+            <button
+                class="btn btn-secondary"
+                onclick="closeAuditModal()">
+
+                Close
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+/* =====================================================
+   AUDIT DATA
+===================================================== */
+
+const auditLogs = [
+
+    {
+        id: 1,
+        date: "26 Sep 2026, 09:15",
+        user: "System Administrator",
+        action: "Login",
+        module: "Authentication",
+        record: "User Account",
+        ip: "192.168.1.10",
+        status: "Success",
+        details: "Successful administrator login."
+    },
+
+    {
+        id: 2,
+        date: "26 Sep 2026, 09:05",
+        user: "John Kamau",
+        action: "Update",
+        module: "Vehicles",
+        record: "KDA 452A",
+        ip: "192.168.1.15",
+        status: "Success",
+        details: "Vehicle mileage and assignment information updated."
+    },
+
+    {
+        id: 3,
+        date: "26 Sep 2026, 08:55",
+        user: "Peter Otieno",
+        action: "Create",
+        module: "Fuel",
+        record: "FO-10026",
+        ip: "192.168.1.21",
+        status: "Success",
+        details: "Fuel transaction created."
+    },
+
+    {
+        id: 4,
+        date: "26 Sep 2026, 08:40",
+        user: "Mary Wanjiku",
+        action: "Approve",
+        module: "Vehicle Requests",
+        record: "REQ-00452",
+        ip: "192.168.1.18",
+        status: "Success",
+        details: "Vehicle request approved."
+    },
+
+    {
+        id: 5,
+        date: "26 Sep 2026, 08:25",
+        user: "Grace Muthoni",
+        action: "Export",
+        module: "Reports",
+        record: "RPT-0186",
+        ip: "192.168.1.25",
+        status: "Success",
+        details: "Fuel consumption report exported."
+    },
+
+    {
+        id: 6,
+        date: "26 Sep 2026, 08:12",
+        user: "Alex Omondi",
+        action: "Login",
+        module: "Authentication",
+        record: "User Account",
+        ip: "192.168.1.30",
+        status: "Failed",
+        details: "Failed login attempt."
+    },
+
+    {
+        id: 7,
+        date: "25 Sep 2026, 17:30",
+        user: "System Administrator",
+        action: "Update",
+        module: "Settings",
+        record: "Security Settings",
+        ip: "192.168.1.10",
+        status: "Success",
+        details: "Security configuration updated."
+    },
+
+    {
+        id: 8,
+        date: "25 Sep 2026, 16:45",
+        user: "Jane Njeri",
+        action: "Update",
+        module: "Maintenance",
+        record: "KDL 215B",
+        ip: "192.168.1.22",
+        status: "Success",
+        details: "Vehicle maintenance record updated."
+    },
+
+    {
+        id: 9,
+        date: "25 Sep 2026, 15:20",
+        user: "System Administrator",
+        action: "Create",
+        module: "Users",
+        record: "EMP-0013",
+        ip: "192.168.1.10",
+        status: "Success",
+        details: "New FleetMS user account created."
+    },
+
+    {
+        id: 10,
+        date: "25 Sep 2026, 14:10",
+        user: "John Kamau",
+        action: "Delete",
+        module: "Vehicles",
+        record: "KDM 602E",
+        ip: "192.168.1.15",
+        status: "Warning",
+        details: "Vehicle record marked for deletion."
+    }
+
+];
+
+
+/* =====================================================
+   INITIALISE
+===================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        renderAuditLogs();
+
+    }
+);
+
+
+/* =====================================================
+   TABS
+===================================================== */
+
+function openTab(event, tabName) {
+
+    const contents =
+        document.querySelectorAll(
+            ".tab-content"
+        );
+
+    contents.forEach(
+        content => {
+            content.classList.remove("active");
+        }
+    );
+
+
+    const buttons =
+        document.querySelectorAll(
+            ".tab-button"
+        );
+
+    buttons.forEach(
+        button => {
+            button.classList.remove("active");
+        }
+    );
+
+
+    document
+        .getElementById(tabName)
+        .classList.add("active");
+
+
+    event.currentTarget
+        .classList.add("active");
+
+}
+
+
+/* =====================================================
+   GENERAL SETTINGS
+===================================================== */
+
+function saveGeneralSettings() {
+
+    alert(
+        "General system settings saved successfully."
+    );
+
+}
+
+
+/* =====================================================
+   SECURITY SETTINGS
+===================================================== */
+
+function saveSecuritySettings() {
+
+    alert(
+        "Security settings saved successfully."
+    );
+
+}
+
+
+/* =====================================================
+   NOTIFICATION SETTINGS
+===================================================== */
+
+function saveNotificationSettings() {
+
+    alert(
+        "Notification settings saved successfully."
+    );
+
+}
+
+
+/* =====================================================
+   BACKUP SETTINGS
+===================================================== */
+
+function saveBackupSettings() {
+
+    alert(
+        "Backup and data settings saved successfully."
+    );
+
+}
+
+
+/* =====================================================
+   CREATE BACKUP
+===================================================== */
+
+function createBackup() {
+
+    const confirmed =
+        confirm(
+            "Create a new FleetMS database backup now?"
+        );
+
+
+    if (!confirmed) return;
+
+
+    alert(
+        "Database backup completed successfully."
+    );
+
+}
+
+
+/* =====================================================
+   RENDER AUDIT LOGS
+===================================================== */
+
+function renderAuditLogs(
+    logs = auditLogs
+) {
+
+    const table =
+        document.getElementById(
+            "auditTable"
+        );
+
+
+    table.innerHTML = "";
+
+
+    if (logs.length === 0) {
+
+        table.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="8"
+                    style="
+                        text-align:center;
+                        padding:25px;
+                    ">
+
+                    No audit records found.
+
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+
+    }
+
+
+    logs.forEach(log => {
+
+        let statusClass =
+            log.status.toLowerCase();
+
+
+        table.innerHTML += `
+
+            <tr>
+
+                <td>
+                    ${log.date}
+                </td>
+
+                <td>
+                    <strong>
+                        ${log.user}
+                    </strong>
+                </td>
+
+                <td>
+                    ${log.action}
+                </td>
+
+                <td>
+                    ${log.module}
+                </td>
+
+                <td>
+                    ${log.record}
+                </td>
+
+                <td>
+                    ${log.ip}
+                </td>
+
+                <td>
+
+                    <span
+                        class="status ${statusClass}">
+
+                        ${log.status}
+
+                    </span>
+
+                </td>
+
+                <td>
+
+                    <button
+                        class="btn btn-secondary btn-small"
+                        onclick="viewAudit(${log.id})">
+
+                        View
+
+                    </button>
+
+                </td>
+
+            </tr>
+
+        `;
+
+    });
+
+}
+
+
+/* =====================================================
+   FILTER AUDIT
+===================================================== */
+
+function filterAudit() {
+
+    const search =
+        document.getElementById(
+            "auditSearch"
+        ).value.toLowerCase();
+
+
+    const module =
+        document.getElementById(
+            "auditModule"
+        ).value;
+
+
+    const action =
+        document.getElementById(
+            "auditAction"
+        ).value;
+
+
+    const status =
+        document.getElementById(
+            "auditStatus"
+        ).value;
+
+
+    const filtered =
+        auditLogs.filter(log => {
+
+            const searchMatch =
+                log.user.toLowerCase()
+                    .includes(search) ||
+
+                log.action.toLowerCase()
+                    .includes(search) ||
+
+                log.module.toLowerCase()
+                    .includes(search) ||
+
+                log.record.toLowerCase()
+                    .includes(search);
+
+
+            const moduleMatch =
+                module === "All" ||
+                log.module === module;
+
+
+            const actionMatch =
+                action === "All" ||
+                log.action === action;
+
+
+            const statusMatch =
+                status === "All" ||
+                log.status === status;
+
+
+            return (
+                searchMatch &&
+                moduleMatch &&
+                actionMatch &&
+                statusMatch
+            );
+
+        });
+
+
+    renderAuditLogs(filtered);
+
+}
+
+
+/* =====================================================
+   CLEAR AUDIT FILTERS
+===================================================== */
+
+function clearAuditFilters() {
+
+    document.getElementById(
+        "auditSearch"
+    ).value = "";
+
+
+    document.getElementById(
+        "auditModule"
+    ).value = "All";
+
+
+    document.getElementById(
+        "auditAction"
+    ).value = "All";
+
+
+    document.getElementById(
+        "auditStatus"
+    ).value = "All";
+
+
+    renderAuditLogs();
+
+}
+
+
+/* =====================================================
+   VIEW AUDIT
+===================================================== */
+
+function viewAudit(id) {
+
+    const log =
+        auditLogs.find(
+            item => item.id === id
+        );
+
+
+    if (!log) return;
+
+
+    document.getElementById(
+        "auditDetails"
+    ).innerHTML = `
+
+        <div class="audit-details">
+
+
+            <div class="detail-box">
+
+                <strong>
+                    Date & Time
+                </strong>
+
+                <span>
+                    ${log.date}
+                </span>
+
+            </div>
+
+
+            <div class="detail-box">
+
+                <strong>
+                    User
+                </strong>
+
+                <span>
+                    ${log.user}
+                </span>
+
+            </div>
+
+
+            <div class="detail-box">
+
+                <strong>
+                    Action
+                </strong>
+
+                <span>
+                    ${log.action}
+                </span>
+
+            </div>
+
+
+            <div class="detail-box">
+
+                <strong>
+                    Module
+                </strong>
+
+                <span>
+                    ${log.module}
+                </span>
+
+            </div>
+
+
+            <div class="detail-box">
+
+                <strong>
+                    Record Affected
+                </strong>
+
+                <span>
+                    ${log.record}
+                </span>
+
+            </div>
+
+
+            <div class="detail-box">
+
+                <strong>
+                    IP Address
+                </strong>
+
+                <span>
+                    ${log.ip}
+                </span>
+
+            </div>
+
+
+            <div class="detail-box">
+
+                <strong>
+                    Status
+                </strong>
+
+                <span>
+                    ${log.status}
+                </span>
+
+            </div>
+
+
+            <div class="detail-box">
+
+                <strong>
+                    Event ID
+                </strong>
+
+                <span>
+                    AUD-${String(log.id).padStart(5,"0")}
+                </span>
+
+            </div>
+
+
+            <div class="detail-box"
+                 style="grid-column:1/-1;">
+
+                <strong>
+                    Event Description
+                </strong>
+
+                <span>
+                    ${log.details}
+                </span>
+
+            </div>
+
+
+        </div>
+
+    `;
+
+
+    document.getElementById(
+        "auditModal"
+    ).style.display = "block";
+
+}
+
+
+/* =====================================================
+   CLOSE AUDIT MODAL
+===================================================== */
+
+function closeAuditModal() {
+
+    document.getElementById(
+        "auditModal"
+    ).style.display = "none";
+
+}
+
+
+/* =====================================================
+   EXPORT AUDIT LOG
+===================================================== */
+
+function exportAuditLog() {
+
+    let csv = [
+
+        [
+            "Event ID",
+            "Date & Time",
+            "User",
+            "Action",
+            "Module",
+            "Record",
+            "IP Address",
+            "Status",
+            "Details"
+        ].join(",")
+
+    ];
+
+
+    auditLogs.forEach(log => {
+
+        csv.push([
+
+            `AUD-${String(log.id).padStart(5,"0")}`,
+            log.date,
+            log.user,
+            log.action,
+            log.module,
+            log.record,
+            log.ip,
+            log.status,
+            log.details
+
+        ].map(value => {
+
+            return `"${String(value)
+                .replace(/"/g, '""')}"`;
+
+        }).join(","));
+
+    });
+
+
+    const blob =
+        new Blob(
+            [csv.join("\n")],
+            {
+                type: "text/csv;charset=utf-8;"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(blob);
+
+
+    const link =
+        document.createElement("a");
+
+
+    link.href = url;
+
+    link.download =
+        "FleetMS_Audit_Trail.csv";
+
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+
+}
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+function logout() {
+
+    const confirmed =
+        confirm(
+            "Are you sure you want to logout?"
+        );
+
+
+    if (confirmed) {
+
+        window.location.href =
+            "login.html";
+
+    }
+
+}
+
+
+/* =====================================================
+   CLOSE MODAL OUTSIDE
+===================================================== */
+
+window.onclick =
+    function(event) {
+
+        const modal =
+            document.getElementById(
+                "auditModal"
+            );
+
+
+        if (event.target === modal) {
+
+            closeAuditModal();
+
+        }
+
+    };
+
+
+</script>
+
+</body>
+</html>

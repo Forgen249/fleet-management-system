@@ -1,0 +1,1521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FleetMS | Driver Management</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f4f6f8;
+            color: #222;
+        }
+
+        /* =========================
+           TOP NAVBAR
+        ========================== */
+        .navbar {
+            height: 65px;
+            background: #111;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            color: #d4af37;
+        }
+
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #d4af37;
+            color: #111;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* =========================
+           SIDEBAR
+        ========================== */
+        .sidebar {
+            position: fixed;
+            top: 65px;
+            left: 0;
+            bottom: 0;
+            width: 235px;
+            background: #181818;
+            color: white;
+            padding-top: 20px;
+        }
+
+        .sidebar h3 {
+            padding: 0 20px 15px;
+            font-size: 13px;
+            color: #aaa;
+            text-transform: uppercase;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #ddd;
+            text-decoration: none;
+            padding: 13px 20px;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #292929;
+            color: #d4af37;
+            border-left: 4px solid #d4af37;
+        }
+
+        /* =========================
+           MAIN CONTENT
+        ========================== */
+        .main {
+            margin-left: 235px;
+            padding: 90px 30px 40px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            font-size: 27px;
+            margin-bottom: 5px;
+        }
+
+        .page-header p {
+            color: #777;
+            font-size: 14px;
+        }
+
+        .btn {
+            border: none;
+            padding: 11px 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .btn-primary {
+            background: #d4af37;
+            color: #111;
+        }
+
+        .btn-primary:hover {
+            background: #b9972f;
+        }
+
+        .btn-dark {
+            background: #222;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        /* =========================
+           SUMMARY CARDS
+        ========================== */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .card-title {
+            color: #777;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .card-value {
+            font-size: 27px;
+            font-weight: bold;
+        }
+
+        .gold {
+            color: #c49a25;
+        }
+
+        .green {
+            color: #198754;
+        }
+
+        .red {
+            color: #dc3545;
+        }
+
+        .blue {
+            color: #0d6efd;
+        }
+
+        /* =========================
+           FORM
+        ========================== */
+        .form-container {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            display: none;
+        }
+
+        .form-container h2 {
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 17px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #d4af37;
+        }
+
+        .form-buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        /* =========================
+           FILTERS
+        ========================== */
+        .table-container {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .table-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+            gap: 15px;
+        }
+
+        .table-top h2 {
+            font-size: 20px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+        }
+
+        .filters input,
+        .filters select {
+            padding: 9px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        /* =========================
+           TABLE
+        ========================== */
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #181818;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            font-size: 13px;
+        }
+
+        tr:hover {
+            background: #fafafa;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .status-active {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .status-leave {
+            background: #fff3cd;
+            color: #664d03;
+        }
+
+        .status-inactive {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        .status-suspended {
+            background: #e2e3e5;
+            color: #41464b;
+        }
+
+        .action-btn {
+            border: none;
+            padding: 6px 9px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            margin-right: 3px;
+        }
+
+        .view {
+            background: #0d6efd;
+            color: white;
+        }
+
+        .edit {
+            background: #ffc107;
+            color: #111;
+        }
+
+        .delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        /* =========================
+           MODAL
+        ========================== */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.65);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            width: 650px;
+            max-width: 95%;
+            border-radius: 8px;
+            padding: 25px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+        }
+
+        .close {
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .detail {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .detail label {
+            display: block;
+            color: #777;
+            font-size: 11px;
+            margin-bottom: 4px;
+        }
+
+        .detail span {
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        /* =========================
+           FOOTER
+        ========================== */
+        footer {
+            text-align: center;
+            margin-top: 35px;
+            color: #888;
+            font-size: 12px;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================== */
+        @media(max-width: 1000px) {
+
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .form-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media(max-width: 700px) {
+
+            .sidebar {
+                width: 65px;
+            }
+
+            .sidebar h3,
+            .sidebar a span {
+                display: none;
+            }
+
+            .main {
+                margin-left: 65px;
+                padding: 85px 15px 30px;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header,
+            .table-top {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .filters {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .filters input,
+            .filters select {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- =========================
+     NAVBAR
+========================== -->
+
+<div class="navbar">
+
+    <div class="logo">
+        Fleet<span>MS</span>
+    </div>
+
+    <div class="user-area">
+        <div>
+            <strong>System Administrator</strong>
+        </div>
+
+        <div class="user-icon">
+            SA
+        </div>
+    </div>
+
+</div>
+
+
+<!-- =========================
+     SIDEBAR
+========================== -->
+
+<div class="sidebar">
+
+    <h3>Fleet Management</h3>
+
+    <a href="dashboard.html">
+        📊 <span>Dashboard</span>
+    </a>
+
+    <a href="vehicles.html">
+        🚙 <span>Vehicles</span>
+    </a>
+
+    <a href="drivers.html" class="active">
+        👤 <span>Drivers</span>
+    </a>
+
+    <a href="#">
+        🔧 <span>Maintenance</span>
+    </a>
+
+    <a href="#">
+        ⛽ <span>Fuel Management</span>
+    </a>
+
+    <a href="#">
+        📋 <span>Vehicle Requests</span>
+    </a>
+
+    <a href="#">
+        📈 <span>Reports</span>
+    </a>
+
+    <a href="#">
+        👥 <span>Users</span>
+    </a>
+
+    <a href="#">
+        ⚙️ <span>Settings</span>
+    </a>
+
+    <a href="login.html" style="margin-top:30px;">
+        🚪 <span>Logout</span>
+    </a>
+
+</div>
+
+
+<!-- =========================
+     MAIN
+========================== -->
+
+<div class="main">
+
+    <div class="page-header">
+
+        <div>
+            <h1>Driver Management</h1>
+            <p>Register, manage and monitor fleet drivers.</p>
+        </div>
+
+        <button class="btn btn-primary" onclick="openDriverForm()">
+            + Register Driver
+        </button>
+
+    </div>
+
+
+    <!-- =========================
+         SUMMARY CARDS
+    ========================== -->
+
+    <div class="cards">
+
+        <div class="card">
+            <div class="card-title">Total Drivers</div>
+            <div class="card-value gold" id="totalDrivers">0</div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Active Drivers</div>
+            <div class="card-value green" id="activeDrivers">0</div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">On Leave</div>
+            <div class="card-value blue" id="leaveDrivers">0</div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Inactive / Suspended</div>
+            <div class="card-value red" id="inactiveDrivers">0</div>
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         REGISTRATION FORM
+    ========================== -->
+
+    <div class="form-container" id="driverForm">
+
+        <h2 id="formTitle">Register New Driver</h2>
+
+        <form id="driverRegistrationForm">
+
+            <input type="hidden" id="editingId">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>PF / Employee Number</label>
+                    <input type="text" id="employeeNumber" required>
+                </div>
+
+                <div class="form-group">
+                    <label>First Name</label>
+                    <input type="text" id="firstName" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" id="lastName" required>
+                </div>
+
+                <div class="form-group">
+                    <label>ID / Passport Number</label>
+                    <input type="text" id="idNumber" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="phone" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="email">
+                </div>
+
+                <div class="form-group">
+                    <label>Driving Licence Number</label>
+                    <input type="text" id="licenceNumber" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Licence Category</label>
+
+                    <select id="licenceCategory" required>
+                        <option value="">Select Category</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="C1">C1</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
+                        <option value="G">G</option>
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+                    <label>Licence Expiry Date</label>
+                    <input type="date" id="licenceExpiry" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Department / Directorate</label>
+                    <input type="text" id="department">
+                </div>
+
+                <div class="form-group">
+                    <label>Employment Type</label>
+
+                    <select id="employmentType">
+                        <option value="">Select Type</option>
+                        <option value="Permanent">Permanent</option>
+                        <option value="Contract">Contract</option>
+                        <option value="Temporary">Temporary</option>
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+                    <label>Driver Status</label>
+
+                    <select id="driverStatus" required>
+                        <option value="Active">Active</option>
+                        <option value="On Leave">On Leave</option>
+                        <option value="Inactive">Inactive</option>
+                        <option value="Suspended">Suspended</option>
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-buttons">
+
+                <button type="submit" class="btn btn-primary">
+                    Save Driver
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    onclick="closeDriverForm()">
+                    Cancel
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- =========================
+         DRIVER REGISTER
+    ========================== -->
+
+    <div class="table-container">
+
+        <div class="table-top">
+
+            <h2>Driver Register</h2>
+
+            <div class="filters">
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search driver..."
+                    onkeyup="filterDrivers()"
+                >
+
+                <select id="statusFilter" onchange="filterDrivers()">
+
+                    <option value="">All Statuses</option>
+                    <option value="Active">Active</option>
+                    <option value="On Leave">On Leave</option>
+                    <option value="Inactive">Inactive</option>
+                    <option value="Suspended">Suspended</option>
+
+                </select>
+
+                <select id="categoryFilter" onchange="filterDrivers()">
+
+                    <option value="">All Licence Categories</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="C1">C1</option>
+                    <option value="D">D</option>
+                    <option value="E">E</option>
+                    <option value="F">F</option>
+                    <option value="G">G</option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>PF No.</th>
+                        <th>Driver Name</th>
+                        <th>Phone</th>
+                        <th>Licence No.</th>
+                        <th>Category</th>
+                        <th>Licence Expiry</th>
+                        <th>Department</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="driverTableBody"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <footer>
+        Fleet Management System © 2026 | State Department
+    </footer>
+
+</div>
+
+
+<!-- =========================
+     DRIVER DETAILS MODAL
+========================== -->
+
+<div class="modal" id="driverModal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2>Driver Details</h2>
+
+            <span class="close" onclick="closeModal()">
+                &times;
+            </span>
+
+        </div>
+
+        <div class="details-grid" id="driverDetails"></div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    /* =========================
+       DEMO DRIVER DATABASE
+    ========================== */
+
+    let drivers = [
+
+        {
+            id: 1,
+            employeeNumber: "PF-10452",
+            firstName: "John",
+            lastName: "Mwangi",
+            idNumber: "ID-23456789",
+            phone: "0712345678",
+            email: "john.mwangi@example.go.ke",
+            licenceNumber: "DL-784521",
+            licenceCategory: "B",
+            licenceExpiry: "2027-08-15",
+            department: "Transport Services",
+            employmentType: "Permanent",
+            status: "Active"
+        },
+
+        {
+            id: 2,
+            employeeNumber: "PF-10981",
+            firstName: "Peter",
+            lastName: "Mutua",
+            idNumber: "ID-24567891",
+            phone: "0723456789",
+            email: "peter.mutua@example.go.ke",
+            licenceNumber: "DL-654321",
+            licenceCategory: "C1",
+            licenceExpiry: "2026-11-20",
+            department: "Administration",
+            employmentType: "Permanent",
+            status: "Active"
+        },
+
+        {
+            id: 3,
+            employeeNumber: "PF-11327",
+            firstName: "David",
+            lastName: "Kamau",
+            idNumber: "ID-26789123",
+            phone: "0734567890",
+            email: "david.kamau@example.go.ke",
+            licenceNumber: "DL-912345",
+            licenceCategory: "C",
+            licenceExpiry: "2027-04-10",
+            department: "Field Operations",
+            employmentType: "Contract",
+            status: "On Leave"
+        },
+
+        {
+            id: 4,
+            employeeNumber: "PF-11876",
+            firstName: "Samuel",
+            lastName: "Kiptoo",
+            idNumber: "ID-28901234",
+            phone: "0745678901",
+            email: "samuel.kiptoo@example.go.ke",
+            licenceNumber: "DL-345678",
+            licenceCategory: "D",
+            licenceExpiry: "2026-10-05",
+            department: "Transport Services",
+            employmentType: "Permanent",
+            status: "Active"
+        },
+
+        {
+            id: 5,
+            employeeNumber: "PF-12145",
+            firstName: "James",
+            lastName: "Otieno",
+            idNumber: "ID-30123456",
+            phone: "0756789012",
+            email: "james.otieno@example.go.ke",
+            licenceNumber: "DL-567890",
+            licenceCategory: "B",
+            licenceExpiry: "2025-12-12",
+            department: "Administration",
+            employmentType: "Permanent",
+            status: "Suspended"
+        }
+
+    ];
+
+
+    /* =========================
+       OPEN FORM
+    ========================== */
+
+    function openDriverForm() {
+
+        document.getElementById("driverForm").style.display = "block";
+
+        document.getElementById("formTitle").textContent =
+            "Register New Driver";
+
+        document.getElementById("driverRegistrationForm").reset();
+
+        document.getElementById("editingId").value = "";
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+    }
+
+
+    /* =========================
+       CLOSE FORM
+    ========================== */
+
+    function closeDriverForm() {
+
+        document.getElementById("driverForm").style.display = "none";
+
+        document.getElementById("driverRegistrationForm").reset();
+
+        document.getElementById("editingId").value = "";
+    }
+
+
+    /* =========================
+       STATUS BADGE
+    ========================== */
+
+    function statusBadge(status) {
+
+        let className = "status-active";
+
+        if (status === "On Leave") {
+            className = "status-leave";
+        }
+
+        if (status === "Inactive") {
+            className = "status-inactive";
+        }
+
+        if (status === "Suspended") {
+            className = "status-suspended";
+        }
+
+        return `<span class="status ${className}">
+                    ${status}
+                </span>`;
+    }
+
+
+    /* =========================
+       DISPLAY DRIVERS
+    ========================== */
+
+    function displayDrivers(list = drivers) {
+
+        const tbody =
+            document.getElementById("driverTableBody");
+
+        tbody.innerHTML = "";
+
+        if (list.length === 0) {
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="9"
+                        style="text-align:center;padding:25px;">
+                        No drivers found.
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+
+        list.forEach(driver => {
+
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+
+                <td>${driver.employeeNumber}</td>
+
+                <td>
+                    <strong>
+                        ${driver.firstName} ${driver.lastName}
+                    </strong>
+                </td>
+
+                <td>${driver.phone}</td>
+
+                <td>${driver.licenceNumber}</td>
+
+                <td>${driver.licenceCategory}</td>
+
+                <td>${driver.licenceExpiry}</td>
+
+                <td>${driver.department || "-"}</td>
+
+                <td>${statusBadge(driver.status)}</td>
+
+                <td>
+
+                    <button
+                        class="action-btn view"
+                        onclick="viewDriver(${driver.id})">
+                        View
+                    </button>
+
+                    <button
+                        class="action-btn edit"
+                        onclick="editDriver(${driver.id})">
+                        Edit
+                    </button>
+
+                    <button
+                        class="action-btn delete"
+                        onclick="deleteDriver(${driver.id})">
+                        Delete
+                    </button>
+
+                </td>
+
+            `;
+
+            tbody.appendChild(row);
+
+        });
+
+
+        updateStatistics();
+    }
+
+
+    /* =========================
+       UPDATE STATISTICS
+    ========================== */
+
+    function updateStatistics() {
+
+        document.getElementById("totalDrivers").textContent =
+            drivers.length;
+
+        document.getElementById("activeDrivers").textContent =
+            drivers.filter(d => d.status === "Active").length;
+
+        document.getElementById("leaveDrivers").textContent =
+            drivers.filter(d => d.status === "On Leave").length;
+
+        document.getElementById("inactiveDrivers").textContent =
+            drivers.filter(
+                d => d.status === "Inactive" ||
+                     d.status === "Suspended"
+            ).length;
+    }
+
+
+    /* =========================
+       FILTER DRIVERS
+    ========================== */
+
+    function filterDrivers() {
+
+        const search =
+            document.getElementById("searchInput")
+                .value
+                .toLowerCase();
+
+        const status =
+            document.getElementById("statusFilter").value;
+
+        const category =
+            document.getElementById("categoryFilter").value;
+
+
+        const filtered = drivers.filter(driver => {
+
+            const fullName =
+                `${driver.firstName} ${driver.lastName}`
+                .toLowerCase();
+
+            const matchesSearch =
+                fullName.includes(search) ||
+                driver.employeeNumber
+                    .toLowerCase()
+                    .includes(search) ||
+                driver.licenceNumber
+                    .toLowerCase()
+                    .includes(search) ||
+                driver.phone
+                    .toLowerCase()
+                    .includes(search);
+
+            const matchesStatus =
+                !status || driver.status === status;
+
+            const matchesCategory =
+                !category ||
+                driver.licenceCategory === category;
+
+            return (
+                matchesSearch &&
+                matchesStatus &&
+                matchesCategory
+            );
+
+        });
+
+
+        displayDrivers(filtered);
+    }
+
+
+    /* =========================
+       SAVE DRIVER
+    ========================== */
+
+    document
+        .getElementById("driverRegistrationForm")
+        .addEventListener("submit", function(event) {
+
+            event.preventDefault();
+
+
+            const editingId =
+                document.getElementById("editingId").value;
+
+
+            const driverData = {
+
+                employeeNumber:
+                    document.getElementById("employeeNumber").value.trim(),
+
+                firstName:
+                    document.getElementById("firstName").value.trim(),
+
+                lastName:
+                    document.getElementById("lastName").value.trim(),
+
+                idNumber:
+                    document.getElementById("idNumber").value.trim(),
+
+                phone:
+                    document.getElementById("phone").value.trim(),
+
+                email:
+                    document.getElementById("email").value.trim(),
+
+                licenceNumber:
+                    document.getElementById("licenceNumber").value.trim(),
+
+                licenceCategory:
+                    document.getElementById("licenceCategory").value,
+
+                licenceExpiry:
+                    document.getElementById("licenceExpiry").value,
+
+                department:
+                    document.getElementById("department").value.trim(),
+
+                employmentType:
+                    document.getElementById("employmentType").value,
+
+                status:
+                    document.getElementById("driverStatus").value
+
+            };
+
+
+            /* =========================
+               EDIT EXISTING DRIVER
+            ========================== */
+
+            if (editingId) {
+
+                const index =
+                    drivers.findIndex(
+                        d => d.id == editingId
+                    );
+
+                if (index !== -1) {
+
+                    drivers[index] = {
+                        ...drivers[index],
+                        ...driverData
+                    };
+
+                    alert("Driver details updated successfully.");
+
+                }
+
+            }
+
+            /* =========================
+               REGISTER NEW DRIVER
+            ========================== */
+
+            else {
+
+                const duplicate =
+                    drivers.some(
+                        d =>
+                            d.employeeNumber.toLowerCase() ===
+                            driverData.employeeNumber.toLowerCase()
+                    );
+
+                if (duplicate) {
+
+                    alert(
+                        "A driver with this PF / Employee Number already exists."
+                    );
+
+                    return;
+                }
+
+
+                drivers.push({
+
+                    id: Date.now(),
+
+                    ...driverData
+
+                });
+
+
+                alert("Driver registered successfully.");
+
+            }
+
+
+            closeDriverForm();
+
+            displayDrivers();
+
+        });
+
+
+    /* =========================
+       VIEW DRIVER
+    ========================== */
+
+    function viewDriver(id) {
+
+        const driver =
+            drivers.find(d => d.id === id);
+
+        if (!driver) return;
+
+
+        const details =
+            document.getElementById("driverDetails");
+
+
+        details.innerHTML = `
+
+            <div class="detail">
+                <label>PF / Employee Number</label>
+                <span>${driver.employeeNumber}</span>
+            </div>
+
+            <div class="detail">
+                <label>Driver Name</label>
+                <span>
+                    ${driver.firstName} ${driver.lastName}
+                </span>
+            </div>
+
+            <div class="detail">
+                <label>ID / Passport Number</label>
+                <span>${driver.idNumber}</span>
+            </div>
+
+            <div class="detail">
+                <label>Phone Number</label>
+                <span>${driver.phone}</span>
+            </div>
+
+            <div class="detail">
+                <label>Email</label>
+                <span>${driver.email || "-"}</span>
+            </div>
+
+            <div class="detail">
+                <label>Driving Licence</label>
+                <span>${driver.licenceNumber}</span>
+            </div>
+
+            <div class="detail">
+                <label>Licence Category</label>
+                <span>${driver.licenceCategory}</span>
+            </div>
+
+            <div class="detail">
+                <label>Licence Expiry</label>
+                <span>${driver.licenceExpiry}</span>
+            </div>
+
+            <div class="detail">
+                <label>Department</label>
+                <span>${driver.department || "-"}</span>
+            </div>
+
+            <div class="detail">
+                <label>Employment Type</label>
+                <span>${driver.employmentType || "-"}</span>
+            </div>
+
+            <div class="detail">
+                <label>Status</label>
+                <span>${statusBadge(driver.status)}</span>
+            </div>
+
+        `;
+
+
+        document.getElementById("driverModal").style.display =
+            "flex";
+    }
+
+
+    /* =========================
+       CLOSE MODAL
+    ========================== */
+
+    function closeModal() {
+
+        document.getElementById("driverModal").style.display =
+            "none";
+    }
+
+
+    /* =========================
+       EDIT DRIVER
+    ========================== */
+
+    function editDriver(id) {
+
+        const driver =
+            drivers.find(d => d.id === id);
+
+        if (!driver) return;
+
+
+        document.getElementById("driverForm").style.display =
+            "block";
+
+        document.getElementById("formTitle").textContent =
+            "Edit Driver";
+
+
+        document.getElementById("editingId").value =
+            driver.id;
+
+        document.getElementById("employeeNumber").value =
+            driver.employeeNumber;
+
+        document.getElementById("firstName").value =
+            driver.firstName;
+
+        document.getElementById("lastName").value =
+            driver.lastName;
+
+        document.getElementById("idNumber").value =
+            driver.idNumber;
+
+        document.getElementById("phone").value =
+            driver.phone;
+
+        document.getElementById("email").value =
+            driver.email;
+
+        document.getElementById("licenceNumber").value =
+            driver.licenceNumber;
+
+        document.getElementById("licenceCategory").value =
+            driver.licenceCategory;
+
+        document.getElementById("licenceExpiry").value =
+            driver.licenceExpiry;
+
+        document.getElementById("department").value =
+            driver.department;
+
+        document.getElementById("employmentType").value =
+            driver.employmentType;
+
+        document.getElementById("driverStatus").value =
+            driver.status;
+
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    }
+
+
+    /* =========================
+       DELETE DRIVER
+    ========================== */
+
+    function deleteDriver(id) {
+
+        const driver =
+            drivers.find(d => d.id === id);
+
+        if (!driver) return;
+
+
+        const confirmed =
+            confirm(
+                `Are you sure you want to delete ${driver.firstName} ${driver.lastName}?`
+            );
+
+
+        if (!confirmed) return;
+
+
+        drivers =
+            drivers.filter(d => d.id !== id);
+
+
+        displayDrivers();
+
+        alert("Driver record deleted.");
+
+    }
+
+
+    /* =========================
+       CLOSE MODAL WHEN CLICKING OUTSIDE
+    ========================== */
+
+    window.onclick = function(event) {
+
+        const modal =
+            document.getElementById("driverModal");
+
+        if (event.target === modal) {
+
+            modal.style.display = "none";
+
+        }
+
+    };
+
+
+    /* =========================
+       INITIAL LOAD
+    ========================== */
+
+    displayDrivers();
+
+</script>
+
+</body>
+</html>

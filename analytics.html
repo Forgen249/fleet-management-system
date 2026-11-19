@@ -1,0 +1,1680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>FleetMS | Fleet Analytics</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background: #f4f6f8;
+    color: #222;
+}
+
+/* ================= NAVBAR ================= */
+
+.navbar {
+    height: 65px;
+    background: #111;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 25px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.logo span {
+    color: #d4af37;
+}
+
+.user-area {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #d4af37;
+    color: #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+/* ================= SIDEBAR ================= */
+
+.sidebar {
+    width: 240px;
+    background: #1a1a1a;
+    position: fixed;
+    top: 65px;
+    bottom: 0;
+    left: 0;
+    color: white;
+    padding-top: 20px;
+}
+
+.sidebar a {
+    display: block;
+    color: #ccc;
+    text-decoration: none;
+    padding: 14px 25px;
+    cursor: pointer;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+    background: #292929;
+    color: #d4af37;
+    border-left: 4px solid #d4af37;
+}
+
+.section-title {
+    color: #777;
+    font-size: 11px;
+    padding: 18px 25px 8px;
+    text-transform: uppercase;
+}
+
+/* ================= MAIN ================= */
+
+.main {
+    margin-left: 240px;
+    padding: 95px 30px 40px;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.page-header h1 {
+    font-size: 28px;
+}
+
+.page-header p {
+    color: #777;
+    margin-top: 5px;
+}
+
+.controls {
+    display: flex;
+    gap: 10px;
+}
+
+select,
+button {
+    padding: 10px 14px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+button {
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: #d4af37;
+    color: #111;
+    border: none;
+    font-weight: bold;
+}
+
+/* ================= SUMMARY CARDS ================= */
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.summary-card {
+    background: white;
+    border-radius: 8px;
+    padding: 18px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.summary-card h4 {
+    font-size: 12px;
+    color: #777;
+    margin-bottom: 10px;
+}
+
+.summary-card .value {
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.summary-card .description {
+    color: #888;
+    font-size: 11px;
+    margin-top: 6px;
+}
+
+/* ================= CHART GRID ================= */
+
+.chart-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.chart-card {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.chart-card.full {
+    grid-column: 1 / -1;
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.chart-header h3 {
+    font-size: 17px;
+}
+
+.chart-header span {
+    font-size: 12px;
+    color: #888;
+}
+
+/* ================= BAR CHART ================= */
+
+.bar-chart {
+    height: 250px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    gap: 15px;
+    border-bottom: 1px solid #ddd;
+    padding: 10px 10px 0;
+}
+
+.bar-wrapper {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.bar {
+    width: 55px;
+    max-width: 70%;
+    background: #d4af37;
+    border-radius: 5px 5px 0 0;
+    transition: 0.3s;
+    cursor: pointer;
+    position: relative;
+}
+
+.bar:hover {
+    opacity: 0.75;
+}
+
+.bar-value {
+    font-size: 11px;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.bar-label {
+    font-size: 11px;
+    margin-top: 8px;
+    color: #666;
+}
+
+/* ================= PIE CHART ================= */
+
+.pie-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    min-height: 250px;
+}
+
+.pie {
+    width: 190px;
+    height: 190px;
+    border-radius: 50%;
+    background:
+        conic-gradient(
+            #d4af37 0deg 171deg,
+            #555 171deg 289deg,
+            #888 289deg 341deg,
+            #bbb 341deg 360deg
+        );
+}
+
+.legend {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+}
+
+.legend-box {
+    width: 13px;
+    height: 13px;
+    border-radius: 3px;
+}
+
+/* ================= LINE CHART ================= */
+
+.line-chart {
+    height: 250px;
+    position: relative;
+    border-left: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    padding: 15px;
+}
+
+.line-svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* ================= TABLE ================= */
+
+.analytics-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.analytics-table th,
+.analytics-table td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+    font-size: 13px;
+}
+
+.analytics-table th {
+    background: #f8f9fa;
+}
+
+/* ================= PROGRESS ================= */
+
+.progress-container {
+    margin-bottom: 17px;
+}
+
+.progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    font-size: 13px;
+}
+
+.progress {
+    height: 10px;
+    background: #eee;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: #d4af37;
+    border-radius: 10px;
+}
+
+/* ================= ALERTS ================= */
+
+.alert-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.alert {
+    padding: 13px;
+    border-radius: 5px;
+    background: #f8f9fa;
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+}
+
+.alert.warning {
+    border-left: 4px solid #f0ad4e;
+}
+
+.alert.danger {
+    border-left: 4px solid #dc3545;
+}
+
+.alert.success {
+    border-left: 4px solid #198754;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width: 1200px) {
+
+    .summary-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+}
+
+@media(max-width: 900px) {
+
+    .sidebar {
+        width: 200px;
+    }
+
+    .main {
+        margin-left: 200px;
+    }
+
+    .chart-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .chart-card.full {
+        grid-column: auto;
+    }
+
+}
+
+@media(max-width: 600px) {
+
+    .sidebar {
+        display: none;
+    }
+
+    .main {
+        margin-left: 0;
+        padding: 90px 15px 30px;
+    }
+
+    .summary-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<div class="navbar">
+
+    <div class="logo">
+        Fleet<span>MS</span>
+    </div>
+
+    <div class="user-area">
+
+        <span>System Administrator</span>
+
+        <div class="user-icon">
+            SA
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================= SIDEBAR ================= -->
+
+<div class="sidebar">
+
+    <div class="section-title">
+        Main
+    </div>
+
+    <a onclick="navigate('dashboard.html')">
+        Dashboard
+    </a>
+
+    <a onclick="navigate('vehicles.html')">
+        Vehicle Management
+    </a>
+
+    <a onclick="navigate('drivers.html')">
+        Driver Management
+    </a>
+
+
+    <div class="section-title">
+        Fleet Operations
+    </div>
+
+    <a onclick="navigate('maintenance.html')">
+        Maintenance
+    </a>
+
+    <a onclick="navigate('fuel.html')">
+        Fuel & Mileage
+    </a>
+
+    <a onclick="navigate('vehicle_requests.html')">
+        Vehicle Requests
+    </a>
+
+    <a class="active">
+        Reports & Analytics
+    </a>
+
+
+    <div class="section-title">
+        Administration
+    </div>
+
+    <a onclick="navigate('users.html')">
+        Users & Roles
+    </a>
+
+    <a onclick="navigate('settings.html')">
+        Settings
+    </a>
+
+    <a onclick="logout()">
+        Logout
+    </a>
+
+</div>
+
+
+<!-- ================= MAIN ================= -->
+
+<div class="main">
+
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+
+            <h1>
+                Fleet Analytics
+            </h1>
+
+            <p>
+                Monitor fleet performance, utilization, fuel consumption,
+                maintenance and operational trends.
+            </p>
+
+        </div>
+
+
+        <div class="controls">
+
+            <select id="period" onchange="changePeriod()">
+
+                <option value="month">
+                    This Month
+                </option>
+
+                <option value="quarter">
+                    This Quarter
+                </option>
+
+                <option value="year">
+                    This Year
+                </option>
+
+            </select>
+
+
+            <button
+                class="btn-primary"
+                onclick="refreshAnalytics()">
+
+                Refresh
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= SUMMARY ================= -->
+
+    <div class="summary-grid">
+
+
+        <div class="summary-card">
+
+            <h4>
+                TOTAL VEHICLES
+            </h4>
+
+            <div class="value">
+                248
+            </div>
+
+            <div class="description">
+                Registered fleet
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <h4>
+                UTILIZATION RATE
+            </h4>
+
+            <div class="value">
+                72%
+            </div>
+
+            <div class="description">
+                Vehicles actively utilized
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <h4>
+                TOTAL MILEAGE
+            </h4>
+
+            <div class="value">
+                86,420
+            </div>
+
+            <div class="description">
+                KM this month
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <h4>
+                FUEL COST
+            </h4>
+
+            <div class="value">
+                KES 1.84M
+            </div>
+
+            <div class="description">
+                Current period
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <h4>
+                MAINTENANCE COST
+            </h4>
+
+            <div class="value">
+                KES 920K
+            </div>
+
+            <div class="description">
+                Current period
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <h4>
+                AVG. EFFICIENCY
+            </h4>
+
+            <div class="value">
+                8.2 KM/L
+            </div>
+
+            <div class="description">
+                Fleet average
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= CHARTS ================= -->
+
+    <div class="chart-grid">
+
+
+        <!-- FUEL EXPENDITURE -->
+
+        <div class="chart-card">
+
+            <div class="chart-header">
+
+                <h3>
+                    Monthly Fuel Expenditure
+                </h3>
+
+                <span>
+                    KES
+                </span>
+
+            </div>
+
+
+            <div class="bar-chart">
+
+                <div class="bar-wrapper">
+
+                    <div class="bar-value">
+                        1.32M
+                    </div>
+
+                    <div
+                        class="bar"
+                        style="height:55%;">
+                    </div>
+
+                    <div class="bar-label">
+                        Apr
+                    </div>
+
+                </div>
+
+
+                <div class="bar-wrapper">
+
+                    <div class="bar-value">
+                        1.48M
+                    </div>
+
+                    <div
+                        class="bar"
+                        style="height:62%;">
+                    </div>
+
+                    <div class="bar-label">
+                        May
+                    </div>
+
+                </div>
+
+
+                <div class="bar-wrapper">
+
+                    <div class="bar-value">
+                        1.61M
+                    </div>
+
+                    <div
+                        class="bar"
+                        style="height:69%;">
+                    </div>
+
+                    <div class="bar-label">
+                        Jun
+                    </div>
+
+                </div>
+
+
+                <div class="bar-wrapper">
+
+                    <div class="bar-value">
+                        1.72M
+                    </div>
+
+                    <div
+                        class="bar"
+                        style="height:74%;">
+                    </div>
+
+                    <div class="bar-label">
+                        Jul
+                    </div>
+
+                </div>
+
+
+                <div class="bar-wrapper">
+
+                    <div class="bar-value">
+                        1.84M
+                    </div>
+
+                    <div
+                        class="bar"
+                        style="height:80%;">
+                    </div>
+
+                    <div class="bar-label">
+                        Aug
+                    </div>
+
+                </div>
+
+
+                <div class="bar-wrapper">
+
+                    <div class="bar-value">
+                        1.91M
+                    </div>
+
+                    <div
+                        class="bar"
+                        style="height:84%;">
+                    </div>
+
+                    <div class="bar-label">
+                        Sep
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- VEHICLE STATUS -->
+
+        <div class="chart-card">
+
+            <div class="chart-header">
+
+                <h3>
+                    Fleet Status Distribution
+                </h3>
+
+                <span>
+                    248 Vehicles
+                </span>
+
+            </div>
+
+
+            <div class="pie-container">
+
+                <div class="pie"></div>
+
+
+                <div class="legend">
+
+                    <div class="legend-item">
+
+                        <div
+                            class="legend-box"
+                            style="background:#d4af37;">
+                        </div>
+
+                        Active — 216
+
+                    </div>
+
+
+                    <div class="legend-item">
+
+                        <div
+                            class="legend-box"
+                            style="background:#555;">
+                        </div>
+
+                        Maintenance — 18
+
+                    </div>
+
+
+                    <div class="legend-item">
+
+                        <div
+                            class="legend-box"
+                            style="background:#888;">
+                        </div>
+
+                        Available — 14
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- MILEAGE TREND -->
+
+        <div class="chart-card">
+
+            <div class="chart-header">
+
+                <h3>
+                    Fleet Mileage Trend
+                </h3>
+
+                <span>
+                    KM
+                </span>
+
+            </div>
+
+
+            <div class="line-chart">
+
+                <svg
+                    class="line-svg"
+                    viewBox="0 0 600 230"
+                    preserveAspectRatio="none">
+
+                    <polyline
+                        points="
+                        0,190
+                        100,170
+                        200,150
+                        300,120
+                        400,95
+                        500,70
+                        600,45
+                        "
+                        fill="none"
+                        stroke="#d4af37"
+                        stroke-width="4"
+                    />
+
+                    <circle
+                        cx="0"
+                        cy="190"
+                        r="5"
+                        fill="#d4af37"
+                    />
+
+                    <circle
+                        cx="100"
+                        cy="170"
+                        r="5"
+                        fill="#d4af37"
+                    />
+
+                    <circle
+                        cx="200"
+                        cy="150"
+                        r="5"
+                        fill="#d4af37"
+                    />
+
+                    <circle
+                        cx="300"
+                        cy="120"
+                        r="5"
+                        fill="#d4af37"
+                    />
+
+                    <circle
+                        cx="400"
+                        cy="95"
+                        r="5"
+                        fill="#d4af37"
+                    />
+
+                    <circle
+                        cx="500"
+                        cy="70"
+                        r="5"
+                        fill="#d4af37"
+                    />
+
+                    <circle
+                        cx="600"
+                        cy="45"
+                        r="5"
+                        fill="#d4af37"
+                    />
+
+                </svg>
+
+            </div>
+
+        </div>
+
+
+        <!-- REQUEST ANALYSIS -->
+
+        <div class="chart-card">
+
+            <div class="chart-header">
+
+                <h3>
+                    Vehicle Requests
+                </h3>
+
+                <span>
+                    Current Period
+                </span>
+
+            </div>
+
+
+            <div class="progress-container">
+
+                <div class="progress-label">
+
+                    <span>
+                        Approved
+                    </span>
+
+                    <strong>
+                        68%
+                    </strong>
+
+                </div>
+
+                <div class="progress">
+
+                    <div
+                        class="progress-bar"
+                        style="width:68%;">
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="progress-container">
+
+                <div class="progress-label">
+
+                    <span>
+                        Allocated
+                    </span>
+
+                    <strong>
+                        52%
+                    </strong>
+
+                </div>
+
+                <div class="progress">
+
+                    <div
+                        class="progress-bar"
+                        style="width:52%;">
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="progress-container">
+
+                <div class="progress-label">
+
+                    <span>
+                        Completed
+                    </span>
+
+                    <strong>
+                        44%
+                    </strong>
+
+                </div>
+
+                <div class="progress">
+
+                    <div
+                        class="progress-bar"
+                        style="width:44%;">
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="progress-container">
+
+                <div class="progress-label">
+
+                    <span>
+                        Rejected
+                    </span>
+
+                    <strong>
+                        12%
+                    </strong>
+
+                </div>
+
+                <div class="progress">
+
+                    <div
+                        class="progress-bar"
+                        style="width:12%;">
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- FUEL CONSUMPTION -->
+
+        <div class="chart-card full">
+
+            <div class="chart-header">
+
+                <h3>
+                    Fuel Consumption by Vehicle
+                </h3>
+
+                <span>
+                    Top vehicles by litres consumed
+                </span>
+
+            </div>
+
+
+            <div class="bar-chart">
+
+                <div class="bar-wrapper">
+
+                    <div class="bar-value">
+                        620 L
+                    </div>
+
+                    <div
+                        class="bar"
+                        style="height:90%;">
+                    </div>
+
+                    <div class="bar-label">
+                        KDA 452A
+                    </div>
+
+                </div>
+
+
+                <div class="bar-wrapper">
+
+                    <div class="bar-value">
+                        570 L
+                    </div>
+
+                    <div
+                        class="bar"
+                        style="height:82%;">
+                    </div>
+
+                    <div class="bar-label">
+                        KDG 918C
+                    </div>
+
+                </div>
+
+
+                <div class="bar-wrapper">
+
+                    <div class="bar-value">
+                        520 L
+                    </div>
+
+                    <div
+                        class="bar"
+                        style="height:75%;">
+                    </div>
+
+                    <div class="bar-label">
+                        KDB 331B
+                    </div>
+
+                </div>
+
+
+                <div class="bar-wrapper">
+
+                    <div class="bar-value">
+                        480 L
+                    </div>
+
+                    <div
+                        class="bar"
+                        style="height:68%;">
+                    </div>
+
+                    <div class="bar-label">
+                        KDK 784D
+                    </div>
+
+                </div>
+
+
+                <div class="bar-wrapper">
+
+                    <div class="bar-value">
+                        430 L
+                    </div>
+
+                    <div
+                        class="bar"
+                        style="height:60%;">
+                    </div>
+
+                    <div class="bar-label">
+                        KDL 215B
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= VEHICLE PERFORMANCE ================= -->
+
+    <div class="chart-card" style="margin-bottom:20px;">
+
+        <div class="chart-header">
+
+            <h3>
+                Vehicle Performance Analysis
+            </h3>
+
+            <span>
+                Current Period
+            </span>
+
+        </div>
+
+
+        <table class="analytics-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Vehicle
+                    </th>
+
+                    <th>
+                        Distance (KM)
+                    </th>
+
+                    <th>
+                        Fuel (L)
+                    </th>
+
+                    <th>
+                        KM/L
+                    </th>
+
+                    <th>
+                        Fuel Cost
+                    </th>
+
+                    <th>
+                        Maintenance Cost
+                    </th>
+
+                    <th>
+                        Utilization
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                <tr>
+
+                    <td>
+                        <strong>KDA 452A</strong>
+                    </td>
+
+                    <td>
+                        4,820
+                    </td>
+
+                    <td>
+                        620
+                    </td>
+
+                    <td>
+                        7.77
+                    </td>
+
+                    <td>
+                        KES 117,180
+                    </td>
+
+                    <td>
+                        KES 45,000
+                    </td>
+
+                    <td>
+                        82%
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        <strong>KDG 918C</strong>
+                    </td>
+
+                    <td>
+                        4,250
+                    </td>
+
+                    <td>
+                        570
+                    </td>
+
+                    <td>
+                        7.46
+                    </td>
+
+                    <td>
+                        KES 107,730
+                    </td>
+
+                    <td>
+                        KES 72,000
+                    </td>
+
+                    <td>
+                        76%
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        <strong>KDB 331B</strong>
+                    </td>
+
+                    <td>
+                        4,610
+                    </td>
+
+                    <td>
+                        520
+                    </td>
+
+                    <td>
+                        8.87
+                    </td>
+
+                    <td>
+                        KES 98,280
+                    </td>
+
+                    <td>
+                        KES 31,500
+                    </td>
+
+                    <td>
+                        71%
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        <strong>KDK 784D</strong>
+                    </td>
+
+                    <td>
+                        3,980
+                    </td>
+
+                    <td>
+                        480
+                    </td>
+
+                    <td>
+                        8.29
+                    </td>
+
+                    <td>
+                        KES 90,720
+                    </td>
+
+                    <td>
+                        KES 25,000
+                    </td>
+
+                    <td>
+                        69%
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- ================= ALERTS ================= -->
+
+    <div class="chart-grid">
+
+
+        <div class="chart-card">
+
+            <div class="chart-header">
+
+                <h3>
+                    Fleet Attention Required
+                </h3>
+
+            </div>
+
+
+            <div class="alert-list">
+
+                <div class="alert danger">
+
+                    <span>
+                        KDA 452A — High fuel consumption
+                    </span>
+
+                    <strong>
+                        Review
+                    </strong>
+
+                </div>
+
+
+                <div class="alert warning">
+
+                    <span>
+                        KDG 918C — Maintenance due
+                    </span>
+
+                    <strong>
+                        Service
+                    </strong>
+
+                </div>
+
+
+                <div class="alert warning">
+
+                    <span>
+                        KDB 331B — Insurance renewal approaching
+                    </span>
+
+                    <strong>
+                        Check
+                    </strong>
+
+                </div>
+
+
+                <div class="alert success">
+
+                    <span>
+                        14 vehicles currently available
+                    </span>
+
+                    <strong>
+                        Good
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="chart-card">
+
+            <div class="chart-header">
+
+                <h3>
+                    Fleet Efficiency
+                </h3>
+
+            </div>
+
+
+            <div class="progress-container">
+
+                <div class="progress-label">
+
+                    <span>
+                        Fuel Efficiency
+                    </span>
+
+                    <strong>
+                        82%
+                    </strong>
+
+                </div>
+
+                <div class="progress">
+
+                    <div
+                        class="progress-bar"
+                        style="width:82%;">
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="progress-container">
+
+                <div class="progress-label">
+
+                    <span>
+                        Vehicle Utilization
+                    </span>
+
+                    <strong>
+                        72%
+                    </strong>
+
+                </div>
+
+                <div class="progress">
+
+                    <div
+                        class="progress-bar"
+                        style="width:72%;">
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="progress-container">
+
+                <div class="progress-label">
+
+                    <span>
+                        Maintenance Compliance
+                    </span>
+
+                    <strong>
+                        88%
+                    </strong>
+
+                </div>
+
+                <div class="progress">
+
+                    <div
+                        class="progress-bar"
+                        style="width:88%;">
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="progress-container">
+
+                <div class="progress-label">
+
+                    <span>
+                        Request Fulfilment
+                    </span>
+
+                    <strong>
+                        76%
+                    </strong>
+
+                </div>
+
+                <div class="progress">
+
+                    <div
+                        class="progress-bar"
+                        style="width:76%;">
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* ================= NAVIGATION ================= */
+
+function navigate(page) {
+
+    window.location.href = page;
+
+}
+
+
+/* ================= LOGOUT ================= */
+
+function logout() {
+
+    if (
+        confirm("Are you sure you want to logout?")
+    ) {
+
+        window.location.href = "login.html";
+
+    }
+
+}
+
+
+/* ================= PERIOD ================= */
+
+function changePeriod() {
+
+    const period =
+        document.getElementById("period").value;
+
+    alert(
+        "Analytics period changed to: " +
+        period
+    );
+
+}
+
+
+/* ================= REFRESH ================= */
+
+function refreshAnalytics() {
+
+    alert(
+        "Fleet analytics refreshed successfully."
+    );
+
+}
+
+</script>
+
+</body>
+</html>

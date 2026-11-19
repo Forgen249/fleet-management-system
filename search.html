@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>FleetMS | Search & Filters</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background: #f4f6f8;
+    color: #222;
+}
+
+/* ================= NAVBAR ================= */
+
+.navbar {
+    height: 65px;
+    background: #111;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 25px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.logo span {
+    color: #d4af37;
+}
+
+.user-area {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #d4af37;
+    color: #111;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+
+/* ================= SIDEBAR ================= */
+
+.sidebar {
+    width: 240px;
+    background: #1a1a1a;
+    position: fixed;
+    top: 65px;
+    bottom: 0;
+    left: 0;
+    color: white;
+    padding-top: 20px;
+}
+
+.sidebar a {
+    display: block;
+    color: #ccc;
+    padding: 14px 25px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+    background: #292929;
+    color: #d4af37;
+    border-left: 4px solid #d4af37;
+}
+
+.section-title {
+    font-size: 11px;
+    color: #777;
+    padding: 18px 25px 8px;
+    text-transform: uppercase;
+}
+
+
+/* ================= MAIN ================= */
+
+.main {
+    margin-left: 240px;
+    padding: 95px 30px 40px;
+}
+
+.page-header {
+    margin-bottom: 25px;
+}
+
+.page-header h1 {
+    font-size: 28px;
+}
+
+.page-header p {
+    color: #777;
+    margin-top: 6px;
+}
+
+
+/* ================= SEARCH PANEL ================= */
+
+.search-panel {
+    background: white;
+    padding: 22px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+}
+
+.search-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.search-box {
+    position: relative;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 13px 15px 13px 42px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 15px;
+    top: 12px;
+    font-size: 18px;
+    color: #777;
+}
+
+.search-row select,
+.filter-grid select,
+.filter-grid input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+
+/* ================= FILTER GRID ================= */
+
+.filter-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(5, 1fr);
+    gap: 12px;
+}
+
+.filter-label {
+    font-size: 11px;
+    color: #777;
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.filter-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+
+/* ================= BUTTONS ================= */
+
+.btn {
+    padding: 11px 16px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-primary {
+    background: #d4af37;
+    color: #111;
+}
+
+.btn-secondary {
+    background: #555;
+    color: white;
+}
+
+.btn-success {
+    background: #198754;
+    color: white;
+}
+
+
+/* ================= RESULTS ================= */
+
+.results-panel {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.results-header h3 {
+    font-size: 17px;
+}
+
+.result-count {
+    color: #777;
+    font-size: 13px;
+}
+
+
+/* ================= TABLE ================= */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 13px 10px;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+    font-size: 13px;
+}
+
+th {
+    background: #f8f9fa;
+    color: #555;
+    cursor: pointer;
+    user-select: none;
+}
+
+th:hover {
+    background: #eee;
+}
+
+.sort-icon {
+    color: #aaa;
+    margin-left: 5px;
+}
+
+tr:hover {
+    background: #fafafa;
+}
+
+
+/* ================= STATUS ================= */
+
+.status {
+    padding: 5px 9px;
+    border-radius: 15px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.active {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.maintenance {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.available {
+    background: #cfe2ff;
+    color: #084298;
+}
+
+.inactive {
+    background: #f8d7da;
+    color: #842029;
+}
+
+
+/* ================= EMPTY ================= */
+
+.empty {
+    text-align: center;
+    padding: 40px;
+    color: #888;
+}
+
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width: 1100px) {
+
+    .filter-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .search-row {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media(max-width: 700px) {
+
+    .sidebar {
+        display: none;
+    }
+
+    .main {
+        margin-left: 0;
+        padding: 90px 15px;
+    }
+
+    .filter-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= NAVBAR ================= -->
+
+<div class="navbar">
+
+    <div class="logo">
+        Fleet<span>MS</span>
+    </div>
+
+    <div class="user-area">
+
+        <span>
+            System Administrator
+        </span>
+
+        <div class="user-icon">
+            SA
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================= SIDEBAR ================= -->
+
+<div class="sidebar">
+
+    <div class="section-title">
+        Main
+    </div>
+
+    <a onclick="navigate('dashboard.html')">
+        Dashboard
+    </a>
+
+    <a onclick="navigate('vehicles.html')">
+        Vehicle Management
+    </a>
+
+    <a onclick="navigate('drivers.html')">
+        Driver Management
+    </a>
+
+
+    <div class="section-title">
+        Fleet Operations
+    </div>
+
+    <a onclick="navigate('maintenance.html')">
+        Maintenance
+    </a>
+
+    <a onclick="navigate('fuel.html')">
+        Fuel & Mileage
+    </a>
+
+    <a onclick="navigate('vehicle_requests.html')">
+        Vehicle Requests
+    </a>
+
+    <a onclick="navigate('analytics.html')">
+        Reports & Analytics
+    </a>
+
+
+    <div class="section-title">
+        Administration
+    </div>
+
+    <a onclick="navigate('users.html')">
+        Users & Roles
+    </a>
+
+    <a class="active">
+        Search & Filters
+    </a>
+
+    <a onclick="navigate('settings.html')">
+        Settings
+    </a>
+
+    <a onclick="logout()">
+        Logout
+    </a>
+
+</div>
+
+
+<!-- ================= MAIN ================= -->
+
+<div class="main">
+
+
+    <div class="page-header">
+
+        <h1>
+            Search, Filtering & Sorting
+        </h1>
+
+        <p>
+            Search and analyze fleet records using multiple criteria.
+        </p>
+
+    </div>
+
+
+    <!-- ================= SEARCH PANEL ================= -->
+
+    <div class="search-panel">
+
+
+        <div class="search-row">
+
+
+            <div class="search-box">
+
+                <span class="search-icon">
+                    🔍
+                </span>
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search registration, make, model, driver, department..."
+                    onkeyup="applyFilters()"
+                >
+
+            </div>
+
+
+            <select
+                id="recordType"
+                onchange="changeRecordType()">
+
+                <option value="vehicles">
+                    Vehicles
+                </option>
+
+                <option value="drivers">
+                    Drivers
+                </option>
+
+                <option value="fuel">
+                    Fuel Records
+                </option>
+
+                <option value="maintenance">
+                    Maintenance
+                </option>
+
+                <option value="requests">
+                    Vehicle Requests
+                </option>
+
+            </select>
+
+
+            <select
+                id="sortOrder"
+                onchange="applyFilters()">
+
+                <option value="default">
+                    Sort: Default
+                </option>
+
+                <option value="asc">
+                    A → Z
+                </option>
+
+                <option value="desc">
+                    Z → A
+                </option>
+
+                <option value="newest">
+                    Newest First
+                </option>
+
+                <option value="oldest">
+                    Oldest First
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- ================= FILTERS ================= -->
+
+        <div class="filter-grid">
+
+
+            <div>
+
+                <span class="filter-label">
+                    Status
+                </span>
+
+                <select
+                    id="statusFilter"
+                    onchange="applyFilters()">
+
+                    <option value="">
+                        All Statuses
+                    </option>
+
+                    <option value="Active">
+                        Active
+                    </option>
+
+                    <option value="Available">
+                        Available
+                    </option>
+
+                    <option value="Maintenance">
+                        Maintenance
+                    </option>
+
+                    <option value="Inactive">
+                        Inactive
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <span class="filter-label">
+                    Vehicle Category
+                </span>
+
+                <select
+                    id="categoryFilter"
+                    onchange="applyFilters()">
+
+                    <option value="">
+                        All Categories
+                    </option>
+
+                    <option value="Passenger">
+                        Passenger
+                    </option>
+
+                    <option value="Utility">
+                        Utility
+                    </option>
+
+                    <option value="4x4 / SUV">
+                        4x4 / SUV
+                    </option>
+
+                    <option value="Specialized">
+                        Specialized
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <span class="filter-label">
+                    Department
+                </span>
+
+                <select
+                    id="departmentFilter"
+                    onchange="applyFilters()">
+
+                    <option value="">
+                        All Departments
+                    </option>
+
+                    <option value="ICT Division">
+                        ICT Division
+                    </option>
+
+                    <option value="Operations">
+                        Operations
+                    </option>
+
+                    <option value="Human Resource">
+                        Human Resource
+                    </option>
+
+                    <option value="Finance">
+                        Finance
+                    </option>
+
+                    <option value="Administration">
+                        Administration
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <span class="filter-label">
+                    From Date
+                </span>
+
+                <input
+                    type="date"
+                    id="fromDate"
+                    onchange="applyFilters()"
+                >
+
+            </div>
+
+
+            <div>
+
+                <span class="filter-label">
+                    To Date
+                </span>
+
+                <input
+                    type="date"
+                    id="toDate"
+                    onchange="applyFilters()"
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="filter-actions">
+
+            <button
+                class="btn btn-secondary"
+                onclick="resetFilters()">
+
+                Clear Filters
+
+            </button>
+
+
+            <button
+                class="btn btn-success"
+                onclick="exportResults()">
+
+                Export Results
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= RESULTS ================= -->
+
+    <div class="results-panel">
+
+
+        <div class="results-header">
+
+            <h3>
+                Fleet Records
+            </h3>
+
+            <span
+                class="result-count"
+                id="resultCount">
+
+                0 records
+
+            </span>
+
+        </div>
+
+
+        <table>
+
+            <thead id="tableHeader"></thead>
+
+            <tbody id="tableBody"></tbody>
+
+        </table>
+
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+/* =====================================================
+   VEHICLE DATA
+===================================================== */
+
+const vehicles = [
+
+    {
+        registration: "KDA 452A",
+        make: "Toyota",
+        model: "Land Cruiser Prado",
+        category: "4x4 / SUV",
+        department: "ICT Division",
+        driver: "Peter Kamau",
+        status: "Active",
+        date: "2026-09-01"
+    },
+
+    {
+        registration: "KDG 918C",
+        make: "Toyota",
+        model: "Hilux",
+        category: "Utility",
+        department: "Operations",
+        driver: "James Mutua",
+        status: "Maintenance",
+        date: "2026-08-15"
+    },
+
+    {
+        registration: "KDB 331B",
+        make: "Subaru",
+        model: "Forester",
+        category: "4x4 / SUV",
+        department: "Administration",
+        driver: "Samuel Kiptoo",
+        status: "Active",
+        date: "2026-07-20"
+    },
+
+    {
+        registration: "KDK 784D",
+        make: "Toyota",
+        model: "Probox",
+        category: "Passenger",
+        department: "Finance",
+        driver: "David Otieno",
+        status: "Available",
+        date: "2026-06-11"
+    },
+
+    {
+        registration: "KDL 215B",
+        make: "Nissan",
+        model: "X-Trail",
+        category: "Passenger",
+        department: "Human Resource",
+        driver: "Brian Kiptoo",
+        status: "Inactive",
+        date: "2026-05-08"
+    },
+
+    {
+        registration: "KDM 602E",
+        make: "Toyota",
+        model: "Hiace",
+        category: "Specialized",
+        department: "Operations",
+        driver: "John Mwangi",
+        status: "Active",
+        date: "2026-04-22"
+    }
+
+];
+
+
+/* =====================================================
+   TABLE HEADER
+===================================================== */
+
+function renderHeader() {
+
+    document.getElementById("tableHeader").innerHTML = `
+
+        <tr>
+
+            <th onclick="sortColumn('registration')">
+                Registration
+                <span class="sort-icon">↕</span>
+            </th>
+
+            <th onclick="sortColumn('make')">
+                Make
+                <span class="sort-icon">↕</span>
+            </th>
+
+            <th>
+                Model
+            </th>
+
+            <th>
+                Category
+            </th>
+
+            <th>
+                Department
+            </th>
+
+            <th>
+                Driver
+            </th>
+
+            <th>
+                Status
+            </th>
+
+            <th onclick="sortColumn('date')">
+                Date
+                <span class="sort-icon">↕</span>
+            </th>
+
+        </tr>
+
+    `;
+
+}
+
+
+/* =====================================================
+   APPLY FILTERS
+===================================================== */
+
+function applyFilters() {
+
+    const search =
+        document.getElementById("searchInput")
+        .value
+        .toLowerCase();
+
+
+    const status =
+        document.getElementById("statusFilter")
+        .value;
+
+
+    const category =
+        document.getElementById("categoryFilter")
+        .value;
+
+
+    const department =
+        document.getElementById("departmentFilter")
+        .value;
+
+
+    const fromDate =
+        document.getElementById("fromDate")
+        .value;
+
+
+    const toDate =
+        document.getElementById("toDate")
+        .value;
+
+
+    const sort =
+        document.getElementById("sortOrder")
+        .value;
+
+
+    let results =
+        vehicles.filter(vehicle => {
+
+
+            const searchableText = (
+
+                vehicle.registration +
+                " " +
+                vehicle.make +
+                " " +
+                vehicle.model +
+                " " +
+                vehicle.driver +
+                " " +
+                vehicle.department
+
+            ).toLowerCase();
+
+
+            const matchesSearch =
+                searchableText.includes(search);
+
+
+            const matchesStatus =
+                !status ||
+                vehicle.status === status;
+
+
+            const matchesCategory =
+                !category ||
+                vehicle.category === category;
+
+
+            const matchesDepartment =
+                !department ||
+                vehicle.department === department;
+
+
+            const matchesFrom =
+                !fromDate ||
+                vehicle.date >= fromDate;
+
+
+            const matchesTo =
+                !toDate ||
+                vehicle.date <= toDate;
+
+
+            return (
+
+                matchesSearch &&
+                matchesStatus &&
+                matchesCategory &&
+                matchesDepartment &&
+                matchesFrom &&
+                matchesTo
+
+            );
+
+        });
+
+
+    /* ================= SORT ================= */
+
+    if (sort === "asc") {
+
+        results.sort(
+            (a,b) =>
+            a.registration.localeCompare(
+                b.registration
+            )
+        );
+
+    }
+
+
+    if (sort === "desc") {
+
+        results.sort(
+            (a,b) =>
+            b.registration.localeCompare(
+                a.registration
+            )
+        );
+
+    }
+
+
+    if (sort === "newest") {
+
+        results.sort(
+            (a,b) =>
+            new Date(b.date) -
+            new Date(a.date)
+        );
+
+    }
+
+
+    if (sort === "oldest") {
+
+        results.sort(
+            (a,b) =>
+            new Date(a.date) -
+            new Date(b.date)
+        );
+
+    }
+
+
+    renderResults(results);
+
+}
+
+
+/* =====================================================
+   RENDER RESULTS
+===================================================== */
+
+function renderResults(results) {
+
+    const tbody =
+        document.getElementById("tableBody");
+
+
+    tbody.innerHTML = "";
+
+
+    document.getElementById("resultCount")
+        .textContent =
+        results.length +
+        (results.length === 1
+            ? " record"
+            : " records");
+
+
+    if (results.length === 0) {
+
+        tbody.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="8"
+                    class="empty">
+
+                    No records found matching
+                    your search criteria.
+
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+
+    }
+
+
+    results.forEach(vehicle => {
+
+        let statusClass = "";
+
+
+        if (vehicle.status === "Active") {
+
+            statusClass = "active";
+
+        } else if (
+            vehicle.status === "Maintenance"
+        ) {
+
+            statusClass = "maintenance";
+
+        } else if (
+            vehicle.status === "Available"
+        ) {
+
+            statusClass = "available";
+
+        } else {
+
+            statusClass = "inactive";
+
+        }
+
+
+        const row =
+            document.createElement("tr");
+
+
+        row.innerHTML = `
+
+            <td>
+                <strong>
+                    ${vehicle.registration}
+                </strong>
+            </td>
+
+            <td>
+                ${vehicle.make}
+            </td>
+
+            <td>
+                ${vehicle.model}
+            </td>
+
+            <td>
+                ${vehicle.category}
+            </td>
+
+            <td>
+                ${vehicle.department}
+            </td>
+
+            <td>
+                ${vehicle.driver}
+            </td>
+
+            <td>
+
+                <span
+                    class="status ${statusClass}">
+
+                    ${vehicle.status}
+
+                </span>
+
+            </td>
+
+            <td>
+                ${vehicle.date}
+            </td>
+
+        `;
+
+
+        tbody.appendChild(row);
+
+    });
+
+}
+
+
+/* =====================================================
+   COLUMN SORT
+===================================================== */
+
+function sortColumn(column) {
+
+    let current =
+        document.getElementById("sortOrder");
+
+
+    if (
+        current.value === "asc"
+    ) {
+
+        current.value = "desc";
+
+    } else {
+
+        current.value = "asc";
+
+    }
+
+
+    applyFilters();
+
+}
+
+
+/* =====================================================
+   RESET
+===================================================== */
+
+function resetFilters() {
+
+    document.getElementById(
+        "searchInput"
+    ).value = "";
+
+
+    document.getElementById(
+        "statusFilter"
+    ).value = "";
+
+
+    document.getElementById(
+        "categoryFilter"
+    ).value = "";
+
+
+    document.getElementById(
+        "departmentFilter"
+    ).value = "";
+
+
+    document.getElementById(
+        "fromDate"
+    ).value = "";
+
+
+    document.getElementById(
+        "toDate"
+    ).value = "";
+
+
+    document.getElementById(
+        "sortOrder"
+    ).value = "default";
+
+
+    applyFilters();
+
+}
+
+
+/* =====================================================
+   RECORD TYPE
+===================================================== */
+
+function changeRecordType() {
+
+    const type =
+        document.getElementById(
+            "recordType"
+        ).value;
+
+
+    if (type !== "vehicles") {
+
+        alert(
+            "The " +
+            type +
+            " search interface will be connected to its database module."
+        );
+
+        document.getElementById(
+            "recordType"
+        ).value = "vehicles";
+
+    }
+
+}
+
+
+/* =====================================================
+   EXPORT
+===================================================== */
+
+function exportResults() {
+
+    alert(
+        "Filtered records will be exported through the Django reporting API in the production version."
+    );
+
+}
+
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+function navigate(page) {
+
+    window.location.href = page;
+
+}
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+function logout() {
+
+    if (
+        confirm(
+            "Are you sure you want to logout?"
+        )
+    ) {
+
+        window.location.href =
+            "login.html";
+
+    }
+
+}
+
+
+/* =====================================================
+   INITIALIZE
+===================================================== */
+
+renderHeader();
+
+applyFilters();
+
+</script>
+
+</body>
+</html>
